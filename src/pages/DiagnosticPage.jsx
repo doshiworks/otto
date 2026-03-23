@@ -128,7 +128,7 @@ export default function DiagnosticPage({ onComplete }) {
               <span style={{ fontSize: 13, fontFamily: "Manrope", fontWeight: 700, color: "#004D40" }}>Diagnostic in Progress</span>
             </div>
             <div style={{ width: 128, height: 8, background: "#e1e3e4", borderRadius: 99, overflow: "hidden" }}>
-              <div style={{ height: "100%", width: `${progress}%`, background: "#511e00", borderRadius: 99, transition: "width 0.5s ease" }} />
+              <div style={{ height: "100%", width: `${progress}%`, background: "#3a5a1c", borderRadius: 99, transition: "width 0.5s ease" }} />
             </div>
             <span className="material-symbols-outlined" style={{ color: "#64748b" }}>notifications</span>
             <div style={{ width: 32, height: 32, borderRadius: "50%", background: "#eceeef" }} />
@@ -179,13 +179,13 @@ export default function DiagnosticPage({ onComplete }) {
           </div>
 
           {/* Early insight */}
-          <div style={{ background: "white", borderRadius: 12, padding: 24, borderLeft: "4px solid #511e00" }}>
+          <div style={{ background: "white", borderRadius: 12, padding: 24, borderLeft: "4px solid #3a5a1c" }}>
             <div className="flex gap-3">
-              <span className="material-symbols-outlined" style={{ color: "#511e00", fontSize: 20 }}>lightbulb</span>
+              <span className="material-symbols-outlined" style={{ color: "#3a5a1c", fontSize: 20 }}>lightbulb</span>
               <div>
                 <h4 style={{ fontFamily: "Manrope", fontWeight: 700, fontSize: 14, marginBottom: 6, color: "#191c1d" }}>Early Insight</h4>
                 <p style={{ fontSize: 13, color: "#3f4945", lineHeight: 1.6 }}>
-                  You already show strong <span style={{ color: "#511e00", fontWeight: 700 }}>execution skills</span> — that's a core PM capability. We're refining the strategy piece next.
+                  You already show strong <span style={{ color: "#3a5a1c", fontWeight: 700 }}>execution skills</span> — that's a core PM capability. We're refining the strategy piece next.
                 </p>
               </div>
             </div>

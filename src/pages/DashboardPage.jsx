@@ -9,16 +9,8 @@ function Shell({ activeTab, onNavigate, onSignOut, children }) {
       <Sidebar activeTab={activeTab} onNavigate={onNavigate} onSignOut={onSignOut} />
       <div style={{ flex: 1, display: "flex", flexDirection: "column", minWidth: 0 }}>
         {/* Top bar */}
-        <header style={{ background: "rgba(255,255,255,0.8)", backdropFilter: "blur(24px)", position: "sticky", top: 0, zIndex: 50, padding: "12px 32px", display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px solid rgba(191,201,196,0.15)" }}>
-          <div className="flex gap-6">
-            {["Assessments", "Resources"].map((l) => (
-              <span key={l} style={{ fontSize: 14, fontWeight: 600, color: "#64748b", cursor: "pointer", fontFamily: "Manrope" }}>{l}</span>
-            ))}
-          </div>
+        <header style={{ background: "rgba(255,255,255,0.8)", backdropFilter: "blur(24px)", position: "sticky", top: 0, zIndex: 50, padding: "12px 32px", display: "flex", justifyContent: "flex-end", alignItems: "center", borderBottom: "1px solid rgba(191,201,196,0.15)" }}>
           <div className="flex items-center gap-3">
-            <button style={{ background: "#004D40", color: "white", padding: "8px 18px", borderRadius: 8, border: "none", fontFamily: "Manrope", fontWeight: 700, fontSize: 13, cursor: "pointer" }}>
-              Check Readiness
-            </button>
             <span className="material-symbols-outlined" style={{ color: "#64748b", cursor: "pointer" }}>notifications</span>
             <span className="material-symbols-outlined" style={{ color: "#64748b", cursor: "pointer" }}>settings</span>
           </div>
@@ -93,7 +85,7 @@ function OverviewTab({ onNavigate }) {
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}>
           <div style={{ background: "white", borderRadius: 24, padding: 28 }}>
             <h3 className="flex items-center gap-2" style={{ fontFamily: "Manrope", fontWeight: 700, fontSize: 16, marginBottom: 24, color: "#191c1d" }}>
-              <span className="material-symbols-outlined" style={{ color: "#511e00", fontSize: 20 }}>history</span>
+              <span className="material-symbols-outlined" style={{ color: "#3a5a1c", fontSize: 20 }}>history</span>
               Practice Performance
             </h3>
             {[
@@ -169,7 +161,7 @@ function OverviewTab({ onNavigate }) {
           <div style={{ position: "absolute", top: -16, right: -16, opacity: 0.1 }}>
             <span className="material-symbols-outlined" style={{ fontSize: 100 }}>architecture</span>
           </div>
-          <p style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "#742e00", marginBottom: 8 }}>My Archetype</p>
+          <p style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "#4e7a28", marginBottom: 8 }}>My Archetype</p>
           <h3 style={{ fontFamily: "Manrope", fontWeight: 900, fontSize: 20, color: "#191c1d", marginBottom: 8 }}>The Builder</h3>
           <p style={{ fontSize: 12, color: "#475569", lineHeight: 1.6, marginBottom: 16 }}>Strength in User Research and technical execution. Growth needed in Stakeholder Alignment.</p>
           <div className="flex flex-wrap gap-2">
@@ -205,7 +197,7 @@ function OverviewTab({ onNavigate }) {
         <div style={{ background: "white", borderRadius: 24, padding: 24 }}>
           <p style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.15em", color: "#94a3b8", marginBottom: 16 }}>Application Progress</p>
           <div className="flex justify-between items-center" style={{ marginBottom: 16 }}>
-            {[{ n: 12, label: "Sent" }, { n: 4, label: "Interviews", color: "#003334" }, { n: 1, label: "Offers", color: "#511e00" }].map((s, i) => (
+            {[{ n: 12, label: "Sent" }, { n: 4, label: "Interviews", color: "#003334" }, { n: 1, label: "Offers", color: "#3a5a1c" }].map((s, i) => (
               <div key={s.label} className="text-center" style={{ flex: 1 }}>
                 {i > 0 && <div style={{ width: 1, height: 32, background: "#f2f4f5", display: "inline-block", verticalAlign: "middle" }} />}
                 <div>
@@ -236,7 +228,7 @@ const practiceQuestions = [
 
 const CAT_COLORS = {
   "Product Strategy": { bg: "#cbe4e9", text: "#4f666a" },
-  "Estimation":       { bg: "#ffdbcb", text: "#7a3000" },
+  "Estimation":       { bg: "#ddeec8", text: "#4e7a28" },
   "Behavioural":      { bg: "#e1e3e4", text: "#3f4945" },
   "Product Design":   { bg: "#cbe4e9", text: "#4f666a" },
   "Strategy":         { bg: "rgba(0,51,52,0.08)", text: "#003334" },
@@ -350,13 +342,13 @@ function PracticeInterviewsTab({ onSubmit }) {
         {/* Header */}
         <div className="flex items-start justify-between">
           <div>
-            <span style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "#511e00" }}>Interview Module</span>
+            <span style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "#3a5a1c" }}>Interview Module</span>
             <h2 style={{ fontFamily: "Manrope", fontWeight: 800, fontSize: 24, color: "#191c1d", marginTop: 4 }}>Interview Prep Loop</h2>
           </div>
           <div style={{ textAlign: "right" }}>
             <span style={{ fontSize: 13, color: "#3f4945", fontWeight: 500 }}>Question 1 of {interviewScenarios.length}</span>
             <div style={{ height: 6, width: 120, background: "#e6e8e9", borderRadius: 99, marginTop: 6, overflow: "hidden" }}>
-              <div style={{ width: "30%", height: "100%", background: "#511e00", borderRadius: 99 }} />
+              <div style={{ width: "30%", height: "100%", background: "#3a5a1c", borderRadius: 99 }} />
             </div>
           </div>
         </div>
@@ -417,8 +409,8 @@ function PracticeInterviewsTab({ onSubmit }) {
       {/* Tips sidebar */}
       <div style={{ background: "#f2f4f5", borderRadius: 16, padding: 24, position: "sticky", top: 80, alignSelf: "flex-start" }}>
         <div className="flex items-center gap-3" style={{ marginBottom: 24 }}>
-          <div style={{ width: 40, height: 40, borderRadius: "50%", background: "#ffdbcb", display: "flex", alignItems: "center", justifyContent: "center" }}>
-            <span className="material-symbols-outlined" style={{ color: "#511e00", fontSize: 20 }}>tips_and_updates</span>
+          <div style={{ width: 40, height: 40, borderRadius: "50%", background: "#ddeec8", display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <span className="material-symbols-outlined" style={{ color: "#3a5a1c", fontSize: 20 }}>tips_and_updates</span>
           </div>
           <h3 style={{ fontFamily: "Manrope", fontWeight: 700, fontSize: 16, color: "#003334" }}>Architect's Tips</h3>
         </div>
@@ -483,14 +475,14 @@ function InterviewFeedbackTab({ onRetry }) {
           <div style={{ position: "absolute", top: 16, right: 16, opacity: 0.08 }}>
             <span className="material-symbols-outlined" style={{ fontSize: 72 }}>trending_up</span>
           </div>
-          <span style={{ background: "#ffdbcb", color: "#341100", padding: "3px 12px", borderRadius: 99, fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", display: "inline-block", marginBottom: 16 }}>Next Milestone</span>
+          <span style={{ background: "#ddeec8", color: "#2a4010", padding: "3px 12px", borderRadius: 99, fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", display: "inline-block", marginBottom: 16 }}>Next Milestone</span>
           <h2 style={{ fontFamily: "Manrope", fontWeight: 800, fontSize: 22, color: "#003334", marginBottom: 12 }}>Improvement Path</h2>
           <p style={{ fontSize: 14, color: "#3f4945", lineHeight: 1.6, marginBottom: 24, maxWidth: 420 }}>
             Your Product Sense is sharp, but your <strong>Technical Fluency</strong> score lagged. To bridge the gap for Lead PM roles, focus on articulating system constraints.
           </p>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
-            <div style={{ background: "white", borderRadius: 10, padding: 16, borderLeft: "4px solid #511e00" }}>
-              <p style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", color: "#511e00", marginBottom: 4 }}>Recommended Action</p>
+            <div style={{ background: "white", borderRadius: 10, padding: 16, borderLeft: "4px solid #3a5a1c" }}>
+              <p style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", color: "#3a5a1c", marginBottom: 4 }}>Recommended Action</p>
               <p style={{ fontSize: 13, fontWeight: 600, color: "#003334" }}>Retry this question with a focus on Tech Fluency</p>
             </div>
             <div style={{ background: "white", borderRadius: 10, padding: 16, borderLeft: "4px solid #003334" }}>

@@ -48,15 +48,6 @@ export default function Sidebar({ activeTab, onNavigate, onSignOut }) {
         })}
       </nav>
 
-      {/* Upgrade */}
-      <div style={{ background: "rgba(0,51,52,0.05)", borderRadius: 16, padding: 16, marginBottom: 8 }}>
-        <p style={{ fontSize: 11, fontWeight: 700, color: "#004D40", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 6 }}>Upgrade to Pro</p>
-        <p style={{ fontSize: 11, color: "#475569", lineHeight: 1.6, marginBottom: 12 }}>Get unlimited mock interviews and expert reviews.</p>
-        <button style={{ width: "100%", padding: "8px 0", background: "#004D40", color: "white", borderRadius: 8, border: "none", fontSize: 12, fontWeight: 700, cursor: "pointer" }}>
-          Unlock Access
-        </button>
-      </div>
-
       {/* Footer */}
       <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
         {[{ icon: "help", label: "Support" }, { icon: "logout", label: "Logout" }].map((item) => (

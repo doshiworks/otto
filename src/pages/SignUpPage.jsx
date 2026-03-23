@@ -1,8 +1,18 @@
 import { useState } from "react";
+import { supabase } from "../lib/supabase";
 
 export default function SignUpPage({ onContinue }) {
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  async function handleSubmit() {
+    if (!name || !email) return;
+    setLoading(true);
+    await supabase.from("signups").insert({ name, email });
+    setLoading(false);
+    onContinue({ name, email });
+  }
 
   return (
     <div style={{ minHeight: "100vh", background: "#f8fafa", display: "flex", alignItems: "center", justifyContent: "center", padding: 24 }}>
@@ -55,10 +65,11 @@ export default function SignUpPage({ onContinue }) {
               />
             </div>
             <button
-              onClick={() => onContinue({ name, email })}
+              onClick={handleSubmit}
+              disabled={loading}
               style={{ width: "100%", padding: "14px", background: "#004D40", color: "white", borderRadius: 8, border: "none", fontFamily: "Manrope", fontWeight: 700, fontSize: 15, cursor: "pointer", marginTop: 8 }}
             >
-              See my readiness report →
+              {loading ? "Saving..." : "See my readiness report →"}
             </button>
           </div>
 

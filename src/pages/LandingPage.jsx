@@ -37,7 +37,7 @@ function Hero({ onCTA }) {
           </div>
           <h1 style={{ fontFamily: "Manrope", fontWeight: 800, fontSize: 60, lineHeight: 1.08, letterSpacing: "-1.5px", color: "#004D40", marginBottom: 24 }}>
             Stop Guessing.<br />
-            <span style={{ color: "#511e00" }}>Start Getting Hired.</span>
+            <span style={{ color: "#3a5a1c" }}>Start Getting Hired.</span>
           </h1>
           <p style={{ fontSize: 18, color: "#3f4945", lineHeight: 1.7, maxWidth: 480, marginBottom: 36 }}>
             The first PM transition platform built for the Indian market that focuses on your readiness, not just courses. We tell you where you stand and get you ready for top-tier roles.
@@ -63,13 +63,13 @@ function Hero({ onCTA }) {
                 <h3 style={{ fontFamily: "Manrope", fontWeight: 700, fontSize: 17, color: "#004D40" }}>Architectural Readiness</h3>
                 <p style={{ fontSize: 12, color: "#94a3b8", marginTop: 4 }}>Candidate: Senior Lead Architect</p>
               </div>
-              <div style={{ background: "#742e00", color: "#ff955e", width: 48, height: 48, borderRadius: 8, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "Manrope", fontWeight: 800, fontSize: 18 }}>
+              <div style={{ background: "#4e7a28", color: "#a3c878", width: 48, height: 48, borderRadius: 8, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "Manrope", fontWeight: 800, fontSize: 18 }}>
                 58%
               </div>
             </div>
             {[
               { label: "Strategic Thinking", pct: 72, color: "#004D40" },
-              { label: "Product Sense",      pct: 45, color: "#511e00" },
+              { label: "Product Sense",      pct: 45, color: "#3a5a1c" },
               { label: "Execution Depth",    pct: 60, color: "#004c4d" },
             ].map((d) => (
               <div key={d.label} style={{ marginBottom: 20 }}>
@@ -168,7 +168,7 @@ function ArchetypeSection() {
           <div style={{ background: "rgba(255,255,255,0.05)", backdropFilter: "blur(8px)", borderRadius: 16, padding: 48, border: "1px solid rgba(255,255,255,0.1)", position: "relative", overflow: "hidden" }}>
             <div className="flex gap-12 items-center" style={{ position: "relative", zIndex: 10 }}>
               <div style={{ flex: 1 }}>
-                <span style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "#ffb692" }}>Recommended for Engineers</span>
+                <span style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "#b8d48e" }}>Recommended for Engineers</span>
                 <h3 style={{ fontFamily: "Manrope", fontWeight: 800, fontSize: 36, color: "white", margin: "16px 0 20px" }}>The Builder</h3>
                 <p style={{ color: "#cbd5e1", lineHeight: 1.7, marginBottom: 28, fontSize: 14 }}>
                   Specializes in high-scale technical systems and platform products. You don't just manage features; you architect the foundations of the product.
@@ -176,7 +176,7 @@ function ArchetypeSection() {
                 <div className="grid gap-3" style={{ gridTemplateColumns: "1fr 1fr" }}>
                   {["System Architecture", "API Strategy", "Technical Debt Mgmt", "Scalability Focus"].map((s) => (
                     <div key={s} className="flex items-center gap-2" style={{ color: "rgba(255,255,255,0.8)", fontSize: 13 }}>
-                      <span className="material-symbols-outlined" style={{ fontSize: 16, color: "#ffb692" }}>check_circle</span>
+                      <span className="material-symbols-outlined" style={{ fontSize: 16, color: "#b8d48e" }}>check_circle</span>
                       {s}
                     </div>
                   ))}
@@ -200,7 +200,7 @@ function ArchetypeSection() {
               { icon: "forum",    name: "The Advocate",   desc: "User-centric PM focusing on empathy and design-led growth." },
             ].map((a) => (
               <div key={a.name} style={{ flex: 1, background: "rgba(255,255,255,0.05)", padding: 28, borderRadius: 16, border: "1px solid rgba(255,255,255,0.1)", cursor: "pointer" }}>
-                <span className="material-symbols-outlined" style={{ color: "#ffb692", marginBottom: 14, display: "block" }}>{a.icon}</span>
+                <span className="material-symbols-outlined" style={{ color: "#b8d48e", marginBottom: 14, display: "block" }}>{a.icon}</span>
                 <h4 style={{ fontFamily: "Manrope", fontWeight: 700, fontSize: 19, color: "white", marginBottom: 8 }}>{a.name}</h4>
                 <p style={{ fontSize: 13, color: "#94a3b8", lineHeight: 1.6 }}>{a.desc}</p>
               </div>
@@ -230,7 +230,7 @@ function HowItWorks({ onCTA }) {
           <div style={{ position: "absolute", top: 24, left: 0, right: 0, height: 2, background: "#e6e8e9", zIndex: 0 }} />
           {steps.map((s) => (
             <div key={s.n} className="tonal-lift" style={{ background: "white", padding: 28, borderRadius: 16, textAlign: "center", position: "relative", zIndex: 1 }}>
-              <div style={{ width: 48, height: 48, borderRadius: "50%", background: s.tertiary ? "#511e00" : s.active ? "#004D40" : "#e1e3e4", color: s.active || s.tertiary ? "white" : "#004D40", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "Manrope", fontWeight: 700, fontSize: 16, margin: "0 auto 20px", border: "4px solid #f8fafa" }}>
+              <div style={{ width: 48, height: 48, borderRadius: "50%", background: s.tertiary ? "#3a5a1c" : s.active ? "#004D40" : "#e1e3e4", color: s.active || s.tertiary ? "white" : "#004D40", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "Manrope", fontWeight: 700, fontSize: 16, margin: "0 auto 20px", border: "4px solid #f8fafa" }}>
                 {s.n}
               </div>
               <h4 style={{ fontFamily: "Manrope", fontWeight: 700, fontSize: 15, marginBottom: 8 }}>{s.label}</h4>
@@ -249,7 +249,7 @@ function HowItWorks({ onCTA }) {
             Check your PM readiness now
           </button>
           <div className="flex items-center justify-center gap-2" style={{ marginTop: 20, color: "#94a3b8", fontSize: 13 }}>
-            <span className="material-symbols-outlined" style={{ fontSize: 16, color: "#511e00" }}>verified_user</span>
+            <span className="material-symbols-outlined" style={{ fontSize: 16, color: "#3a5a1c" }}>verified_user</span>
             Join 1,200+ candidates placed this quarter
           </div>
         </div>

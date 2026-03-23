@@ -27,7 +27,7 @@ export default function PaymentPage({ onComplete }) {
               <p style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "#77bcbd", marginBottom: 4 }}>Pro Plan</p>
               <p style={{ fontFamily: "Manrope", fontWeight: 800, fontSize: 28 }}>₹999 <span style={{ fontSize: 14, fontWeight: 500, opacity: 0.7 }}>/month</span></p>
             </div>
-            <span style={{ background: "#511e00", color: "#ffb692", padding: "4px 12px", borderRadius: 99, fontSize: 11, fontWeight: 700 }}>Most popular</span>
+            <span style={{ background: "#3a5a1c", color: "#b8d48e", padding: "4px 12px", borderRadius: 99, fontSize: 11, fontWeight: 700 }}>Most popular</span>
           </div>
           {[
             "Full readiness report + gap analysis",
