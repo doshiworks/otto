@@ -1,0 +1,44 @@
+@import "tailwindcss";
+
+/* Otto Design System — The Executive Transition Framework */
+
+:root {
+  --primary:              #003334;
+  --primary-container:    #004c4d;
+  --on-primary:           #ffffff;
+  --tertiary:             #511e00;
+  --tertiary-dim:         #ffb692;
+  --surface:              #f8fafa;
+  --surface-low:          #f2f4f5;
+  --surface-lowest:       #ffffff;
+  --surface-container:    #eceeef;
+  --surface-high:         #e4e7e8;
+  --surface-bright:       #f8fafa;
+  --on-surface:           #191c1d;
+  --on-surface-variant:   #3f4948;
+  --outline-variant:      #bfc9c4;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: 'Inter', system-ui, sans-serif;
+  background: var(--surface);
+  color: var(--on-surface);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4 {
+  font-family: 'Manrope', system-ui, sans-serif;
+  margin: 0;
+  color: var(--on-surface);
+}
+
+p { margin: 0; }
+
+#root {
+  width: 100%;
+  min-height: 100svh;
+}
