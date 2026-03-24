@@ -1,15 +1,19 @@
 import { useState } from "react";
 import Sidebar from "../components/Sidebar";
+import { ARCHETYPES } from "../lib/scoring";
 
 // ─── Shared shell ─────────────────────────────────────────────────────────────
 
-function Shell({ activeTab, onNavigate, onSignOut, children }) {
+function Shell({ activeTab, onNavigate, onSignOut, user, children }) {
   return (
     <div style={{ display: "flex", minHeight: "100vh", background: "#f8fafa" }}>
       <Sidebar activeTab={activeTab} onNavigate={onNavigate} onSignOut={onSignOut} />
       <div style={{ flex: 1, display: "flex", flexDirection: "column", minWidth: 0 }}>
         {/* Top bar */}
-        <header style={{ background: "rgba(255,255,255,0.8)", backdropFilter: "blur(24px)", position: "sticky", top: 0, zIndex: 50, padding: "12px 32px", display: "flex", justifyContent: "flex-end", alignItems: "center", borderBottom: "1px solid rgba(191,201,196,0.15)" }}>
+        <header style={{ background: "rgba(255,255,255,0.8)", backdropFilter: "blur(24px)", position: "sticky", top: 0, zIndex: 50, padding: "12px 32px", display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px solid rgba(191,201,196,0.15)" }}>
+          <span style={{ fontFamily: "Manrope", fontWeight: 700, fontSize: 14, color: "#191c1d" }}>
+            {user?.name ? `Welcome back, ${user.name.split(" ")[0]}` : "Welcome back"}
+          </span>
           <div className="flex items-center gap-3">
             <span className="material-symbols-outlined" style={{ color: "#64748b", cursor: "pointer" }}>notifications</span>
             <span className="material-symbols-outlined" style={{ color: "#64748b", cursor: "pointer" }}>settings</span>
@@ -25,7 +29,18 @@ function Shell({ activeTab, onNavigate, onSignOut, children }) {
 
 // ─── Overview tab ─────────────────────────────────────────────────────────────
 
-function OverviewTab({ onNavigate }) {
+function OverviewTab({ onNavigate, results, user }) {
+  const archetypeName = results?.archetype ?? "Builder";
+  const archetype = ARCHETYPES[archetypeName];
+  const overall = results?.overall ?? 0;
+  const dimensions = results?.dimensions ?? [];
+  const weakDims = dimensions.filter((d) => d.weak);
+  const topWeak = weakDims[0]?.name ?? "Product Sense";
+
+  // SVG gauge
+  const circumference = 251.32;
+  const dashOffset = circumference - (overall / 100) * circumference;
+
   return (
     <div style={{ display: "grid", gridTemplateColumns: "8fr 4fr", gap: 32 }}>
       <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
@@ -33,9 +48,11 @@ function OverviewTab({ onNavigate }) {
         {/* Priority action */}
         <div style={{ background: "#004c4d", borderRadius: 24, padding: 36, color: "white", position: "relative", overflow: "hidden" }}>
           <span style={{ display: "inline-block", background: "rgba(255,255,255,0.1)", backdropFilter: "blur(8px)", padding: "4px 12px", borderRadius: 99, fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 16 }}>Priority Action</span>
-          <h2 style={{ fontFamily: "Manrope", fontWeight: 800, fontSize: 28, lineHeight: 1.2, marginBottom: 12, maxWidth: 480 }}>Finalize your User Research Case Study</h2>
+          <h2 style={{ fontFamily: "Manrope", fontWeight: 800, fontSize: 28, lineHeight: 1.2, marginBottom: 12, maxWidth: 480 }}>
+            Strengthen your {topWeak} skills
+          </h2>
           <p style={{ color: "rgba(255,255,255,0.75)", fontSize: 14, lineHeight: 1.6, marginBottom: 24, maxWidth: 440 }}>
-            As a <span style={{ color: "#8dd3d3", fontWeight: 700, fontStyle: "italic" }}>Builder</span>, interviewers expect deep technical product sense. Completing this module will boost your Readiness Score by +12 points.
+            As {archetypeName === "Explorer" ? "an" : "a"} <span style={{ color: "#8dd3d3", fontWeight: 700, fontStyle: "italic" }}>{archetypeName}</span>, this is your biggest gap before interviews. Completing this module will boost your Readiness Score by +12 points.
           </p>
           <button style={{ background: "#8dd3d3", color: "#003334", padding: "12px 28px", borderRadius: 12, border: "none", fontFamily: "Manrope", fontWeight: 700, fontSize: 14, cursor: "pointer" }}>
             Execute Module
@@ -143,32 +160,37 @@ function OverviewTab({ onNavigate }) {
             <svg width="140" height="140" viewBox="0 0 100 100">
               <circle cx="50" cy="50" r="40" fill="transparent" stroke="#f2f4f5" strokeWidth="8" />
               <circle cx="50" cy="50" r="40" fill="transparent" stroke="#003334" strokeWidth="12"
-                strokeDasharray="251.32" strokeDashoffset="90"
+                strokeDasharray={circumference}
+                strokeDashoffset={dashOffset}
                 strokeLinecap="round"
                 style={{ transformOrigin: "50% 50%", transform: "rotate(-90deg)" }}
               />
             </svg>
             <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
-              <span style={{ fontFamily: "Manrope", fontWeight: 900, fontSize: 30, color: "#191c1d", lineHeight: 1 }}>68</span>
-              <span style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "#003334", marginTop: 4 }}>Elite Tier</span>
+              <span style={{ fontFamily: "Manrope", fontWeight: 900, fontSize: 30, color: "#191c1d", lineHeight: 1 }}>{overall}</span>
+              <span style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "#003334", marginTop: 4 }}>Ready</span>
             </div>
           </div>
-          <p style={{ fontSize: 12, color: "#3f4945", lineHeight: 1.6 }}>You are in the top 15% of candidates applying for L6 roles.</p>
+          <p style={{ fontSize: 12, color: "#3f4945", lineHeight: 1.6 }}>
+            {overall >= 70 ? "You're in strong shape. Keep up the practice." : "Keep going — you're making progress every day."}
+          </p>
         </div>
 
         {/* Archetype card */}
         <div style={{ background: "#e1e3e4", borderRadius: 24, padding: 28, position: "relative", overflow: "hidden" }}>
           <div style={{ position: "absolute", top: -16, right: -16, opacity: 0.1 }}>
-            <span className="material-symbols-outlined" style={{ fontSize: 100 }}>architecture</span>
+            <span className="material-symbols-outlined" style={{ fontSize: 100 }}>{archetype.icon}</span>
           </div>
           <p style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "#4e7a28", marginBottom: 8 }}>My Archetype</p>
-          <h3 style={{ fontFamily: "Manrope", fontWeight: 900, fontSize: 20, color: "#191c1d", marginBottom: 8 }}>The Builder</h3>
-          <p style={{ fontSize: 12, color: "#475569", lineHeight: 1.6, marginBottom: 16 }}>Strength in User Research and technical execution. Growth needed in Stakeholder Alignment.</p>
+          <h3 style={{ fontFamily: "Manrope", fontWeight: 900, fontSize: 20, color: "#191c1d", marginBottom: 8 }}>{archetype.title}</h3>
+          <p style={{ fontSize: 12, color: "#475569", lineHeight: 1.6, marginBottom: 16 }}>{archetype.tagline}</p>
           <div className="flex flex-wrap gap-2">
-            {["User Research", "Execution"].map((t) => (
+            {archetype.tags.map((t) => (
               <span key={t} style={{ background: "white", padding: "4px 10px", borderRadius: 6, fontSize: 10, fontWeight: 700, color: "#003334" }}>{t}</span>
             ))}
-            <span style={{ background: "rgba(255,255,255,0.5)", padding: "4px 10px", borderRadius: 6, fontSize: 10, fontWeight: 700, color: "#94a3b8" }}>Strategy</span>
+            {weakDims.map((d) => (
+              <span key={d.name} style={{ background: "rgba(255,255,255,0.5)", padding: "4px 10px", borderRadius: 6, fontSize: 10, fontWeight: 700, color: "#94a3b8" }}>Grow: {d.name}</span>
+            ))}
           </div>
         </div>
 
@@ -577,14 +599,26 @@ function InterviewFeedbackTab({ onRetry }) {
 
 // ─── Roadmap tab ──────────────────────────────────────────────────────────────
 
-function RoadmapTab() {
+const DIMENSION_PHASES = {
+  "Strategy":       { title: "Strategy: Market Positioning & Vision",   icon: "insights" },
+  "Execution":      { title: "Execution: User Research & Delivery",      icon: "groups" },
+  "Tech & Data":    { title: "Tech & Data: Fluency & Analytics",         icon: "code" },
+  "Communication":  { title: "Communication: Stakeholder Management",    icon: "forum" },
+};
+
+function RoadmapTab({ results }) {
   const [timeline, setTimeline] = useState("3m");
-  const phases = [
-    { title: "Foundations: Product Sense", status: "in-progress", week: "Week 3 of 12", pct: 75, icon: "psychology" },
-    { title: "Execution: User Research",   status: "locked",      week: "Next Phase",  pct: 0,  icon: "groups" },
-    { title: "Communication: Stakeholder Mgmt", status: "locked", week: "Phase 3",     pct: 0,  icon: "forum" },
-    { title: "Strategy: Market Positioning",     status: "locked", week: "Phase 4",     pct: 0,  icon: "insights" },
-  ];
+  const dimensions = results?.dimensions ?? [];
+
+  // Sort: weak dimensions first (highest priority), then strong ones
+  const sorted = [...dimensions].sort((a, b) => a.score - b.score);
+  const phases = sorted.map((d, i) => ({
+    ...DIMENSION_PHASES[d.name],
+    status: i === 0 ? "in-progress" : "locked",
+    week: i === 0 ? "Week 1 of 12" : `Phase ${i + 1}`,
+    pct: i === 0 ? 0 : 0,
+    score: d.score,
+  }));
   return (
     <div>
       <div className="flex items-end justify-between" style={{ marginBottom: 28 }}>
@@ -625,7 +659,7 @@ function RoadmapTab() {
 
 // ─── Main Dashboard export ────────────────────────────────────────────────────
 
-export default function DashboardPage({ onSignOut }) {
+export default function DashboardPage({ results, user, onSignOut }) {
   const [activeTab, setActiveTab] = useState("dashboard");
   const [showFeedback, setShowFeedback] = useState(false);
 
@@ -633,9 +667,9 @@ export default function DashboardPage({ onSignOut }) {
   function handleRetry() { setShowFeedback(false); }
 
   return (
-    <Shell activeTab={activeTab} onNavigate={setActiveTab} onSignOut={onSignOut}>
-      {activeTab === "dashboard"           && <OverviewTab onNavigate={setActiveTab} />}
-      {activeTab === "roadmap"             && <RoadmapTab />}
+    <Shell activeTab={activeTab} onNavigate={setActiveTab} onSignOut={onSignOut} user={user}>
+      {activeTab === "dashboard"           && <OverviewTab onNavigate={setActiveTab} results={results} user={user} />}
+      {activeTab === "roadmap"             && <RoadmapTab results={results} />}
       {activeTab === "practice-questions"  && <PracticeQuestionsTab onStartQuestion={() => {}} />}
       {activeTab === "practice-interviews" && !showFeedback && <PracticeInterviewsTab onSubmit={handleInterviewSubmit} />}
       {activeTab === "practice-interviews" && showFeedback  && <InterviewFeedbackTab onRetry={handleRetry} />}
