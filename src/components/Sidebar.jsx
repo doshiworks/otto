@@ -1,4 +1,13 @@
-export default function Sidebar({ activeTab, onNavigate, onSignOut, onRetake }) {
+function getPhase(score) {
+  if (score >= 80) return "Ready to Apply";
+  if (score >= 60) return "Acceleration Phase";
+  if (score >= 40) return "Discovery Phase";
+  return "Foundation Phase";
+}
+
+export default function Sidebar({ activeTab, onNavigate, onSignOut, onRetake, user, results }) {
+  const firstName = user?.name?.split(" ")[0] ?? "there";
+  const phase = getPhase(results?.overall ?? 0);
   const navItems = [
     { id: "dashboard",  icon: "dashboard",  label: "Dashboard" },
     { id: "roadmap",    icon: "book",        label: "Roadmap" },
@@ -18,8 +27,8 @@ export default function Sidebar({ activeTab, onNavigate, onSignOut, onRetake }) 
           <span className="material-symbols-outlined" style={{ color: "#004D40", fontSize: 20 }}>person</span>
         </div>
         <div>
-          <p style={{ fontFamily: "Inter", fontSize: 13, fontWeight: 700, color: "#191c1d", lineHeight: 1.2 }}>Welcome, Architect</p>
-          <p style={{ fontSize: 10, color: "#64748b", textTransform: "uppercase", letterSpacing: "0.08em", marginTop: 2 }}>Phase: Discovery</p>
+          <p style={{ fontFamily: "Inter", fontSize: 13, fontWeight: 700, color: "#191c1d", lineHeight: 1.2 }}>{firstName}</p>
+          <p style={{ fontSize: 10, color: "#64748b", textTransform: "uppercase", letterSpacing: "0.08em", marginTop: 2 }}>Phase: {phase}</p>
         </div>
       </div>
 

@@ -5,10 +5,10 @@ import { generateInterviewFeedback } from "../lib/gemini";
 
 // ─── Shared shell ─────────────────────────────────────────────────────────────
 
-function Shell({ activeTab, onNavigate, onSignOut, onRetake, user, children }) {
+function Shell({ activeTab, onNavigate, onSignOut, onRetake, user, results, children }) {
   return (
     <div style={{ display: "flex", minHeight: "100vh", background: "#f8fafa" }}>
-      <Sidebar activeTab={activeTab} onNavigate={onNavigate} onSignOut={onSignOut} onRetake={onRetake} />
+      <Sidebar activeTab={activeTab} onNavigate={onNavigate} onSignOut={onSignOut} onRetake={onRetake} user={user} results={results} />
       <div style={{ flex: 1, display: "flex", flexDirection: "column", minWidth: 0 }}>
         {/* Top bar */}
         <header style={{ background: "rgba(255,255,255,0.8)", backdropFilter: "blur(24px)", position: "sticky", top: 0, zIndex: 50, padding: "12px 32px", display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px solid rgba(191,201,196,0.15)" }}>
@@ -871,7 +871,7 @@ export default function DashboardPage({ results, user, onSignOut, onRetake }) {
   function handleRetry() { setInterviewResult(null); }
 
   return (
-    <Shell activeTab={activeTab} onNavigate={setActiveTab} onSignOut={onSignOut} onRetake={onRetake} user={user}>
+    <Shell activeTab={activeTab} onNavigate={setActiveTab} onSignOut={onSignOut} onRetake={onRetake} user={user} results={results}>
       {activeTab === "dashboard"           && <OverviewTab onNavigate={setActiveTab} results={results} user={user} />}
       {activeTab === "roadmap"             && <RoadmapTab results={results} />}
       {activeTab === "practice-questions"  && <PracticeQuestionsTab results={results} />}
