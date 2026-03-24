@@ -103,7 +103,7 @@ function OverviewTab({ onNavigate, results, user }) {
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}>
           <div style={{ background: "white", borderRadius: 24, padding: 28 }}>
             <h3 className="flex items-center gap-2" style={{ fontFamily: "Manrope", fontWeight: 700, fontSize: 16, marginBottom: 24, color: "#191c1d" }}>
-              <span className="material-symbols-outlined" style={{ color: "#3a5a1c", fontSize: 20 }}>history</span>
+              <span className="material-symbols-outlined" style={{ color: "#7c2d00", fontSize: 20 }}>history</span>
               Practice Performance
             </h3>
             {[
@@ -182,7 +182,7 @@ function OverviewTab({ onNavigate, results, user }) {
           <div style={{ position: "absolute", top: -16, right: -16, opacity: 0.1 }}>
             <span className="material-symbols-outlined" style={{ fontSize: 100 }}>{archetype.icon}</span>
           </div>
-          <p style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "#4e7a28", marginBottom: 8 }}>My Archetype</p>
+          <p style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "#7c2d00", marginBottom: 8 }}>My Archetype</p>
           <h3 style={{ fontFamily: "Manrope", fontWeight: 900, fontSize: 20, color: "#191c1d", marginBottom: 8 }}>{archetype.title}</h3>
           <p style={{ fontSize: 12, color: "#475569", lineHeight: 1.6, marginBottom: 16 }}>{archetype.tagline}</p>
           <div className="flex flex-wrap gap-2">
@@ -201,16 +201,16 @@ function OverviewTab({ onNavigate, results, user }) {
           {dimensions.map((d) => (
             <div key={d.name} style={{ marginBottom: 16 }}>
               <div className="flex justify-between" style={{ marginBottom: 6 }}>
-                <span style={{ fontSize: 12, fontWeight: 600, color: d.weak ? "#3a5a1c" : "#191c1d" }}>{d.name}</span>
-                <span style={{ fontSize: 12, fontWeight: 700, color: d.weak ? "#3a5a1c" : "#003334" }}>{d.score}%</span>
+                <span style={{ fontSize: 12, fontWeight: 600, color: d.weak ? "#7c2d00" : "#191c1d" }}>{d.name}</span>
+                <span style={{ fontSize: 12, fontWeight: 700, color: d.weak ? "#7c2d00" : "#003334" }}>{d.score}%</span>
               </div>
               <div style={{ height: 6, background: "#eceeef", borderRadius: 99, overflow: "hidden" }}>
-                <div style={{ height: "100%", width: `${d.score}%`, background: d.weak ? "#3a5a1c" : "#003334", borderRadius: 99, transition: "width 0.6s ease" }} />
+                <div style={{ height: "100%", width: `${d.score}%`, background: d.weak ? "#7c2d00" : "#003334", borderRadius: 99, transition: "width 0.6s ease" }} />
               </div>
             </div>
           ))}
           {weakDims.length > 0 && (
-            <p style={{ fontSize: 11, color: "#3a5a1c", marginTop: 4, fontWeight: 600 }}>
+            <p style={{ fontSize: 11, color: "#7c2d00", marginTop: 4, fontWeight: 600 }}>
               ↑ Green = focus areas for your next session
             </p>
           )}
@@ -244,7 +244,7 @@ const practiceQuestions = [
 
 const CAT_COLORS = {
   "Product Strategy": { bg: "#cbe4e9", text: "#4f666a" },
-  "Estimation":       { bg: "#ddeec8", text: "#4e7a28" },
+  "Estimation":       { bg: "#fde8d8", text: "#7c2d00" },
   "Behavioural":      { bg: "#e1e3e4", text: "#3f4945" },
   "Product Design":   { bg: "#cbe4e9", text: "#4f666a" },
   "Strategy":         { bg: "rgba(0,51,52,0.08)", text: "#003334" },
@@ -384,8 +384,8 @@ function PracticeQuestionsTab({ results }) {
               <p style={{ fontFamily: "Manrope", fontWeight: 700, fontSize: 14, color: "#003334", marginBottom: 8 }}>How to improve</p>
               <p style={{ fontSize: 13, color: "#3f4945", lineHeight: 1.6, marginBottom: 16 }}>{f.improvementPath}</p>
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
-                <div style={{ background: "white", borderRadius: 10, padding: 14, borderLeft: "4px solid #3a5a1c" }}>
-                  <p style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", color: "#3a5a1c", marginBottom: 4 }}>Next Action</p>
+                <div style={{ background: "white", borderRadius: 10, padding: 14, borderLeft: "4px solid #7c2d00" }}>
+                  <p style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", color: "#7c2d00", marginBottom: 4 }}>Next Action</p>
                   <p style={{ fontSize: 13, fontWeight: 600, color: "#003334" }}>{f.recommendedAction}</p>
                 </div>
                 <div style={{ background: "white", borderRadius: 10, padding: 14, borderLeft: "4px solid #003334" }}>
@@ -527,13 +527,13 @@ function PracticeInterviewsTab({ onSubmit, results }) {
         {/* Header */}
         <div className="flex items-start justify-between">
           <div>
-            <span style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "#3a5a1c" }}>Interview Module</span>
+            <span style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "#7c2d00" }}>Interview Module</span>
             <h2 style={{ fontFamily: "Manrope", fontWeight: 800, fontSize: 24, color: "#191c1d", marginTop: 4 }}>Interview Prep Loop</h2>
           </div>
           <div style={{ textAlign: "right" }}>
             <span style={{ fontSize: 13, color: "#3f4945", fontWeight: 500 }}>Question 1 of {interviewScenarios.length}</span>
             <div style={{ height: 6, width: 120, background: "#e6e8e9", borderRadius: 99, marginTop: 6, overflow: "hidden" }}>
-              <div style={{ width: "30%", height: "100%", background: "#3a5a1c", borderRadius: 99 }} />
+              <div style={{ width: "30%", height: "100%", background: "#7c2d00", borderRadius: 99 }} />
             </div>
           </div>
         </div>
@@ -595,8 +595,8 @@ function PracticeInterviewsTab({ onSubmit, results }) {
       {/* Tips sidebar */}
       <div style={{ background: "#f2f4f5", borderRadius: 16, padding: 24, position: "sticky", top: 80, alignSelf: "flex-start" }}>
         <div className="flex items-center gap-3" style={{ marginBottom: 24 }}>
-          <div style={{ width: 40, height: 40, borderRadius: "50%", background: "#ddeec8", display: "flex", alignItems: "center", justifyContent: "center" }}>
-            <span className="material-symbols-outlined" style={{ color: "#3a5a1c", fontSize: 20 }}>tips_and_updates</span>
+          <div style={{ width: 40, height: 40, borderRadius: "50%", background: "#fde8d8", display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <span className="material-symbols-outlined" style={{ color: "#7c2d00", fontSize: 20 }}>tips_and_updates</span>
           </div>
           <h3 style={{ fontFamily: "Manrope", fontWeight: 700, fontSize: 16, color: "#003334" }}>Architect's Tips</h3>
         </div>
@@ -677,12 +677,12 @@ function InterviewFeedbackTab({ onRetry, feedback, scenario }) {
           <div style={{ position: "absolute", top: 16, right: 16, opacity: 0.08 }}>
             <span className="material-symbols-outlined" style={{ fontSize: 72 }}>trending_up</span>
           </div>
-          <span style={{ background: "#ddeec8", color: "#2a4010", padding: "3px 12px", borderRadius: 99, fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", display: "inline-block", marginBottom: 16 }}>Next Milestone</span>
+          <span style={{ background: "#fde8d8", color: "#511e00", padding: "3px 12px", borderRadius: 99, fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", display: "inline-block", marginBottom: 16 }}>Next Milestone</span>
           <h2 style={{ fontFamily: "Manrope", fontWeight: 800, fontSize: 22, color: "#003334", marginBottom: 12 }}>Improvement Path</h2>
           <p style={{ fontSize: 14, color: "#3f4945", lineHeight: 1.6, marginBottom: 24, maxWidth: 420 }}>{f.improvementPath}</p>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
-            <div style={{ background: "white", borderRadius: 10, padding: 16, borderLeft: "4px solid #3a5a1c" }}>
-              <p style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", color: "#3a5a1c", marginBottom: 4 }}>Recommended Action</p>
+            <div style={{ background: "white", borderRadius: 10, padding: 16, borderLeft: "4px solid #7c2d00" }}>
+              <p style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", color: "#7c2d00", marginBottom: 4 }}>Recommended Action</p>
               <p style={{ fontSize: 13, fontWeight: 600, color: "#003334" }}>{f.recommendedAction}</p>
             </div>
             <div style={{ background: "white", borderRadius: 10, padding: 16, borderLeft: "4px solid #003334" }}>

@@ -129,7 +129,7 @@ export default function DiagnosticPage({ onComplete }) {
               <span style={{ fontSize: 13, fontFamily: "Manrope", fontWeight: 700, color: "#004D40" }}>Diagnostic in Progress</span>
             </div>
             <div style={{ width: 128, height: 8, background: "#e1e3e4", borderRadius: 99, overflow: "hidden" }}>
-              <div style={{ height: "100%", width: `${progress}%`, background: "#3a5a1c", borderRadius: 99, transition: "width 0.5s ease" }} />
+              <div style={{ height: "100%", width: `${progress}%`, background: "#7c2d00", borderRadius: 99, transition: "width 0.5s ease" }} />
             </div>
             <span className="material-symbols-outlined" style={{ color: "#64748b" }}>notifications</span>
             <div style={{ width: 32, height: 32, borderRadius: "50%", background: "#eceeef" }} />

@@ -101,7 +101,7 @@ export default function ReadinessReportPage({ results, user, onUnlock }) {
                   <span className="material-symbols-outlined" style={{ fontSize: 64, color: "#8dd3d3" }}>{archetype.icon}</span>
                 </div>
                 <div>
-                  <span style={{ display: "inline-block", background: "rgba(58,90,28,0.1)", color: "#3a5a1c", padding: "3px 12px", borderRadius: 99, fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 12 }}>
+                  <span style={{ display: "inline-block", background: "rgba(124,45,0,0.1)", color: "#7c2d00", padding: "3px 12px", borderRadius: 99, fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 12 }}>
                     Your PM Archetype
                   </span>
                   <h2 style={{ fontFamily: "Manrope", fontWeight: 900, fontSize: 40, color: "#003334", marginBottom: 12, lineHeight: 1 }}>
@@ -130,11 +130,11 @@ export default function ReadinessReportPage({ results, user, onUnlock }) {
                   {/* Show first 2 dimensions unlocked */}
                   {dimensions.slice(0, 2).map((d) => (
                     <div key={d.name} style={{ marginBottom: 20 }}>
-                      <div className="flex justify-between" style={{ fontSize: 13, fontWeight: 700, marginBottom: 6, color: d.weak ? "#3a5a1c" : "#191c1d" }}>
+                      <div className="flex justify-between" style={{ fontSize: 13, fontWeight: 700, marginBottom: 6, color: d.weak ? "#7c2d00" : "#191c1d" }}>
                         <span>{d.name}</span><span>{d.score}%</span>
                       </div>
                       <div style={{ height: 8, background: "#e6e8e9", borderRadius: 99, overflow: "hidden" }}>
-                        <div style={{ height: "100%", width: `${d.score}%`, background: d.weak ? "#3a5a1c" : "#003334", borderRadius: 99 }} />
+                        <div style={{ height: "100%", width: `${d.score}%`, background: d.weak ? "#7c2d00" : "#003334", borderRadius: 99 }} />
                       </div>
                     </div>
                   ))}
@@ -146,21 +146,21 @@ export default function ReadinessReportPage({ results, user, onUnlock }) {
 
                 <div style={{ background: "#f2f4f5", borderRadius: 12, padding: 20 }}>
                   <div className="flex items-center gap-3" style={{ marginBottom: 16 }}>
-                    <div style={{ width: 36, height: 36, borderRadius: 8, background: "rgba(58,90,28,0.1)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                      <span className="material-symbols-outlined" style={{ color: "#3a5a1c", fontSize: 20 }}>warning</span>
+                    <div style={{ width: 36, height: 36, borderRadius: 8, background: "rgba(124,45,0,0.1)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                      <span className="material-symbols-outlined" style={{ color: "#7c2d00", fontSize: 20 }}>warning</span>
                     </div>
                     <h4 style={{ fontFamily: "Manrope", fontWeight: 700, fontSize: 15, color: "#191c1d" }}>Interview Risk Areas</h4>
                   </div>
                   {/* Show first risk area */}
                   <div className="flex items-start gap-2" style={{ marginBottom: 12 }}>
-                    <div style={{ width: 6, height: 6, borderRadius: "50%", background: "#3a5a1c", marginTop: 6, flexShrink: 0 }} />
+                    <div style={{ width: 6, height: 6, borderRadius: "50%", background: "#7c2d00", marginTop: 6, flexShrink: 0 }} />
                     <p style={{ fontSize: 13, color: "#3f4945", lineHeight: 1.6 }}>{riskAreas[0]}</p>
                   </div>
                   {/* Blurred locked risk items */}
                   <div style={{ filter: "blur(4px)" }}>
                     {riskAreas.slice(1).map((r, i) => (
                       <div key={i} className="flex items-start gap-2" style={{ marginBottom: 10 }}>
-                        <div style={{ width: 6, height: 6, borderRadius: "50%", background: "#3a5a1c", marginTop: 6, flexShrink: 0 }} />
+                        <div style={{ width: 6, height: 6, borderRadius: "50%", background: "#7c2d00", marginTop: 6, flexShrink: 0 }} />
                         <p style={{ fontSize: 13, color: "#3f4945", lineHeight: 1.6 }}>{r}</p>
                       </div>
                     ))}
@@ -210,10 +210,10 @@ export default function ReadinessReportPage({ results, user, onUnlock }) {
               <div style={{ position: "absolute", top: -8, right: -8, opacity: 0.08 }}>
                 <span className="material-symbols-outlined" style={{ fontSize: 80 }}>lightbulb</span>
               </div>
-              <p style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.12em", color: "#3a5a1c", marginBottom: 8 }}>
+              <p style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.12em", color: "#7c2d00", marginBottom: 8 }}>
                 {archetypeName}'s Insight
               </p>
-              <p style={{ fontSize: 13, color: "#4e7a28", lineHeight: 1.7, fontWeight: 500 }}>
+              <p style={{ fontSize: 13, color: "#7c2d00", lineHeight: 1.7, fontWeight: 500 }}>
                 {aiLoading ? "Generating your insight..." : `"${insight}"`}
               </p>
             </div>
