@@ -206,14 +206,14 @@ export default function ReadinessReportPage({ results, user, onUnlock }) {
             </div>
 
             {/* Insight */}
-            <div style={{ background: "rgba(255,182,146,0.15)", borderRadius: 16, padding: 24, position: "relative", overflow: "hidden" }}>
+            <div style={{ background: "#7c2d00", borderRadius: 16, padding: 24, position: "relative", overflow: "hidden" }}>
               <div style={{ position: "absolute", top: -8, right: -8, opacity: 0.08 }}>
                 <span className="material-symbols-outlined" style={{ fontSize: 80 }}>lightbulb</span>
               </div>
-              <p style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.12em", color: "#7c2d00", marginBottom: 8 }}>
+              <p style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.12em", color: "rgba(255,255,255,0.7)", marginBottom: 8 }}>
                 {archetypeName}'s Insight
               </p>
-              <p style={{ fontSize: 13, color: "#7c2d00", lineHeight: 1.7, fontWeight: 500 }}>
+              <p style={{ fontSize: 13, color: "white", lineHeight: 1.7, fontWeight: 500 }}>
                 {aiLoading ? "Generating your insight..." : `"${insight}"`}
               </p>
             </div>
