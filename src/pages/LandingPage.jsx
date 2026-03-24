@@ -60,8 +60,8 @@ function Hero({ onCTA }) {
           <div className="tonal-lift" style={{ background: "white", borderRadius: 16, padding: 32, border: "1px solid rgba(191,201,196,0.15)", position: "relative", zIndex: 10 }}>
             <div className="flex justify-between items-start" style={{ marginBottom: 24 }}>
               <div>
-                <h3 style={{ fontFamily: "Manrope", fontWeight: 700, fontSize: 17, color: "#004D40" }}>Architectural Readiness</h3>
-                <p style={{ fontSize: 12, color: "#94a3b8", marginTop: 4 }}>Candidate: Senior Lead Architect</p>
+                <h3 style={{ fontFamily: "Manrope", fontWeight: 700, fontSize: 17, color: "#004D40" }}>PM Readiness Score</h3>
+                <p style={{ fontSize: 12, color: "#94a3b8", marginTop: 4 }}>Candidate: Aspiring Product Manager</p>
               </div>
               <div style={{ background: "#7c2d00", color: "#a3c878", width: 48, height: 48, borderRadius: 8, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "Manrope", fontWeight: 800, fontSize: 18 }}>
                 58%
