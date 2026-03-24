@@ -17,5 +17,5 @@ export default function App() {
   if (page === "signup")     return <SignUpPage results={results} onContinue={(u) => { setUser(u); setPage("report"); }} />;
   if (page === "report")     return <ReadinessReportPage results={results} user={user} onUnlock={() => setPage("payment")} />;
   if (page === "payment")    return <PaymentPage onComplete={() => setPage("dashboard")} />;
-  if (page === "dashboard")  return <DashboardPage results={results} user={user} onSignOut={() => setPage("landing")} />;
+  if (page === "dashboard")  return <DashboardPage results={results} user={user} onSignOut={() => setPage("landing")} onRetake={() => { setResults(null); setUser(null); setPage("diagnostic"); }} />;
 }

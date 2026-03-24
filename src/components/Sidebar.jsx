@@ -1,4 +1,4 @@
-export default function Sidebar({ activeTab, onNavigate, onSignOut }) {
+export default function Sidebar({ activeTab, onNavigate, onSignOut, onRetake }) {
   const navItems = [
     { id: "dashboard",  icon: "dashboard",  label: "Dashboard" },
     { id: "roadmap",    icon: "book",        label: "Roadmap" },
@@ -50,6 +50,14 @@ export default function Sidebar({ activeTab, onNavigate, onSignOut }) {
 
       {/* Footer */}
       <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
+        <button
+          onClick={onRetake}
+          className="flex items-center gap-3"
+          style={{ padding: "8px 16px", background: "none", border: "none", cursor: "pointer", color: "#004D40", fontSize: 13, fontFamily: "Inter", fontWeight: 600 }}
+        >
+          <span className="material-symbols-outlined" style={{ fontSize: 18 }}>restart_alt</span>
+          Retake Diagnostic
+        </button>
         {[{ icon: "help", label: "Support" }, { icon: "logout", label: "Logout" }].map((item) => (
           <button
             key={item.label}

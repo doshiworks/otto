@@ -37,7 +37,17 @@ Extracted from Google Stitch: C:\Users\parth\otto-wireframes\stitch\
 
 ## Progress Log
 
-### 2026-03-24
+### 2026-03-24 (session 3)
+- Added retake diagnostic button to sidebar (resets results + user, goes back to diagnostic)
+- Removed early insight card from diagnostic (was static/unhelpful)
+- Fixed Gemini model name to gemini-2.0-flash
+- All changes pushed to GitHub + Vercel
+
+**Pending for next session:**
+- Session persistence via Supabase Auth (highest priority — users lose data on refresh)
+- Fix payment page (replace fake card form with free trial CTA)
+
+### 2026-03-24 (session 2)
 - Built real score engine (src/lib/scoring.js)
   - 8 questions × weighted answers (0–3pts) across 4 dimensions
   - Archetype resolved from dominant dimension (or Explorer if balanced)
