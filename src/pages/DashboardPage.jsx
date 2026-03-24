@@ -1,6 +1,7 @@
 import { useState } from "react";
 import Sidebar from "../components/Sidebar";
 import { ARCHETYPES } from "../lib/scoring";
+import { generateInterviewFeedback } from "../lib/gemini";
 
 // ─── Shared shell ─────────────────────────────────────────────────────────────
 
@@ -194,43 +195,36 @@ function OverviewTab({ onNavigate, results, user }) {
           </div>
         </div>
 
-        {/* Recommended roles */}
-        <div>
-          <div className="flex items-center justify-between" style={{ marginBottom: 12 }}>
-            <h3 style={{ fontSize: 12, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "#64748b" }}>Recommended Roles</h3>
-            <button style={{ fontSize: 12, fontWeight: 700, color: "#003334", background: "none", border: "none", cursor: "pointer" }}>See All</button>
-          </div>
-          {[
-            { company: "G", name: "Senior PM, Cloud", sub: "Google · Mountain View" },
-            { company: "A", name: "Product Lead", sub: "Airbnb · Remote" },
-          ].map((role) => (
-            <div key={role.name} className="flex items-center gap-3" style={{ background: "white", padding: "14px 16px", borderRadius: 16, marginBottom: 8, cursor: "pointer" }}>
-              <div style={{ width: 40, height: 40, borderRadius: 8, background: "#eceeef", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "Manrope", fontWeight: 800, fontSize: 16, color: "#003334", flexShrink: 0 }}>{role.company}</div>
-              <div style={{ flex: 1 }}>
-                <p style={{ fontSize: 13, fontWeight: 700, color: "#191c1d" }}>{role.name}</p>
-                <p style={{ fontSize: 11, color: "#64748b", marginTop: 2 }}>{role.sub}</p>
+        {/* Dimension breakdown */}
+        <div style={{ background: "white", borderRadius: 24, padding: 28 }}>
+          <p style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.15em", color: "#94a3b8", marginBottom: 20 }}>Score Breakdown</p>
+          {dimensions.map((d) => (
+            <div key={d.name} style={{ marginBottom: 16 }}>
+              <div className="flex justify-between" style={{ marginBottom: 6 }}>
+                <span style={{ fontSize: 12, fontWeight: 600, color: d.weak ? "#3a5a1c" : "#191c1d" }}>{d.name}</span>
+                <span style={{ fontSize: 12, fontWeight: 700, color: d.weak ? "#3a5a1c" : "#003334" }}>{d.score}%</span>
               </div>
-              <span className="material-symbols-outlined" style={{ color: "#003334", fontSize: 18 }}>chevron_right</span>
+              <div style={{ height: 6, background: "#eceeef", borderRadius: 99, overflow: "hidden" }}>
+                <div style={{ height: "100%", width: `${d.score}%`, background: d.weak ? "#3a5a1c" : "#003334", borderRadius: 99, transition: "width 0.6s ease" }} />
+              </div>
             </div>
           ))}
+          {weakDims.length > 0 && (
+            <p style={{ fontSize: 11, color: "#3a5a1c", marginTop: 4, fontWeight: 600 }}>
+              ↑ Green = focus areas for your next session
+            </p>
+          )}
         </div>
 
-        {/* Application tracker */}
-        <div style={{ background: "white", borderRadius: 24, padding: 24 }}>
-          <p style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.15em", color: "#94a3b8", marginBottom: 16 }}>Application Progress</p>
-          <div className="flex justify-between items-center" style={{ marginBottom: 16 }}>
-            {[{ n: 12, label: "Sent" }, { n: 4, label: "Interviews", color: "#003334" }, { n: 1, label: "Offers", color: "#3a5a1c" }].map((s, i) => (
-              <div key={s.label} className="text-center" style={{ flex: 1 }}>
-                {i > 0 && <div style={{ width: 1, height: 32, background: "#f2f4f5", display: "inline-block", verticalAlign: "middle" }} />}
-                <div>
-                  <p style={{ fontFamily: "Manrope", fontWeight: 700, fontSize: 18, color: s.color || "#191c1d" }}>{s.n}</p>
-                  <p style={{ fontSize: 10, textTransform: "uppercase", color: "#94a3b8", letterSpacing: "0.08em" }}>{s.label}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-          <button style={{ width: "100%", padding: "10px", background: "rgba(0,51,52,0.05)", color: "#003334", borderRadius: 12, border: "none", fontSize: 12, fontWeight: 700, cursor: "pointer" }}>
-            View Tracker
+        {/* Next milestone */}
+        <div style={{ background: "#003334", borderRadius: 24, padding: 24 }}>
+          <span className="material-symbols-outlined" style={{ fontSize: 28, color: "#77bcbd", marginBottom: 12, display: "block" }}>flag</span>
+          <p style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "#77bcbd", marginBottom: 6 }}>Next Milestone</p>
+          <p style={{ fontFamily: "Manrope", fontWeight: 700, fontSize: 15, color: "white", marginBottom: 8, lineHeight: 1.4 }}>
+            Complete your first practice interview to unlock your personalised roadmap.
+          </p>
+          <button style={{ width: "100%", padding: "10px", background: "#004c4d", color: "white", borderRadius: 8, border: "1px solid rgba(119,188,189,0.3)", fontSize: 12, fontWeight: 700, cursor: "pointer", fontFamily: "Manrope" }}>
+            Start Practice Interview
           </button>
         </div>
       </div>
@@ -256,12 +250,162 @@ const CAT_COLORS = {
   "Strategy":         { bg: "rgba(0,51,52,0.08)", text: "#003334" },
 };
 
-function PracticeQuestionsTab({ onStartQuestion }) {
+function PracticeQuestionsTab({ results }) {
+  const [active, setActive] = useState(null);
+  const [answer, setAnswer] = useState("");
+  const [submitted, setSubmitted] = useState(false);
+  const [feedback, setFeedback] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  async function handleSubmit() {
+    if (!answer.trim()) return;
+    setLoading(true);
+    try {
+      const fb = await generateInterviewFeedback({
+        question: active.q,
+        context: `Category: ${active.category}. Company context: ${active.company}.`,
+        answer,
+        archetype: results?.archetype ?? "Builder",
+        dimensions: results?.dimensions ?? [],
+      });
+      setFeedback(fb);
+    } catch {
+      setFeedback(null);
+    }
+    setLoading(false);
+    setSubmitted(true);
+  }
+
+  function handleBack() {
+    setActive(null);
+    setAnswer("");
+    setSubmitted(false);
+    setFeedback(null);
+  }
+
+  // Answer view
+  if (active && !submitted) {
+    return (
+      <div style={{ maxWidth: 800 }}>
+        <button className="flex items-center gap-2" onClick={handleBack} style={{ background: "none", border: "none", color: "#003334", fontWeight: 700, fontSize: 12, cursor: "pointer", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 20 }}>
+          <span className="material-symbols-outlined" style={{ fontSize: 16 }}>arrow_back</span>
+          Back to Questions
+        </button>
+        <div style={{ background: "white", borderRadius: 16, padding: 32, marginBottom: 16 }}>
+          <div className="flex items-center gap-2" style={{ marginBottom: 16 }}>
+            <span style={{ background: CAT_COLORS[active.category]?.bg ?? "#eceeef", color: CAT_COLORS[active.category]?.text ?? "#3f4945", padding: "3px 10px", borderRadius: 99, fontSize: 11, fontWeight: 700 }}>{active.category}</span>
+            <span style={{ fontSize: 11, color: "#94a3b8" }}>{active.company} · {active.time}</span>
+          </div>
+          <h2 style={{ fontFamily: "Manrope", fontWeight: 700, fontSize: 22, color: "#003334", lineHeight: 1.4 }}>{active.q}</h2>
+        </div>
+        <textarea
+          value={answer}
+          onChange={(e) => setAnswer(e.target.value)}
+          placeholder="Write your answer here. Be specific — the more detail you give, the better the AI feedback."
+          rows={12}
+          style={{ width: "100%", background: "white", borderRadius: 16, border: "none", padding: 24, fontSize: 14, fontFamily: "Inter", color: "#191c1d", resize: "vertical", outline: "none", boxSizing: "border-box", boxShadow: "0 2px 8px rgba(0,51,52,0.06)", marginBottom: 16 }}
+        />
+        <div className="flex justify-end">
+          <button
+            onClick={handleSubmit}
+            disabled={loading || !answer.trim()}
+            className="flex items-center gap-2"
+            style={{ background: loading || !answer.trim() ? "#e1e3e4" : "#003334", color: loading || !answer.trim() ? "#94a3b8" : "white", padding: "12px 28px", borderRadius: 8, border: "none", fontFamily: "Manrope", fontWeight: 700, fontSize: 14, cursor: loading || !answer.trim() ? "default" : "pointer" }}
+          >
+            {loading ? "Analysing..." : "Get AI Feedback"}
+            <span className="material-symbols-outlined" style={{ fontSize: 18 }}>{loading ? "hourglass_empty" : "auto_awesome"}</span>
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // Feedback view
+  if (active && submitted) {
+    const f = feedback;
+    const circumference = 251.32;
+    const score = f?.score ?? 0;
+    const dashOffset = circumference - (score / 100) * circumference;
+    return (
+      <div style={{ maxWidth: 800 }}>
+        <button className="flex items-center gap-2" onClick={handleBack} style={{ background: "none", border: "none", color: "#003334", fontWeight: 700, fontSize: 12, cursor: "pointer", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 20 }}>
+          <span className="material-symbols-outlined" style={{ fontSize: 16 }}>arrow_back</span>
+          Back to Questions
+        </button>
+        {!f ? (
+          <div style={{ background: "white", borderRadius: 16, padding: 40, textAlign: "center" }}>
+            <p style={{ fontSize: 14, color: "#3f4945" }}>Couldn't generate feedback — please try again.</p>
+          </div>
+        ) : (
+          <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+            {/* Score card */}
+            <div style={{ background: "white", borderRadius: 16, padding: 28, display: "flex", gap: 28, alignItems: "center" }}>
+              <div style={{ position: "relative", width: 100, height: 100, flexShrink: 0 }}>
+                <svg width="100" height="100" viewBox="0 0 100 100">
+                  <circle cx="50" cy="50" r="40" fill="transparent" stroke="#e6e8e9" strokeWidth="8" />
+                  <circle cx="50" cy="50" r="40" fill="transparent" stroke="#003334" strokeWidth="8"
+                    strokeDasharray={circumference} strokeDashoffset={dashOffset}
+                    strokeLinecap="round" style={{ transformOrigin: "50% 50%", transform: "rotate(-90deg)" }}
+                  />
+                </svg>
+                <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
+                  <span style={{ fontFamily: "Manrope", fontWeight: 900, fontSize: 22, color: "#003334", lineHeight: 1 }}>{score}</span>
+                  <span style={{ fontSize: 9, color: "#94a3b8" }}>/ 100</span>
+                </div>
+              </div>
+              <div>
+                <h3 style={{ fontFamily: "Manrope", fontWeight: 700, fontSize: 18, color: "#003334", fontStyle: "italic", marginBottom: 6 }}>"{f.label}"</h3>
+                <p style={{ fontSize: 13, color: "#3f4945", lineHeight: 1.6 }}>{f.summary}</p>
+              </div>
+            </div>
+            {/* What worked / didn't */}
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+              <div style={{ background: "white", borderRadius: 16, padding: 24 }}>
+                <p style={{ fontFamily: "Manrope", fontWeight: 700, fontSize: 14, color: "#16a34a", marginBottom: 16 }}>What Worked</p>
+                {(f.whatWorked ?? []).map((item) => (
+                  <div key={item.title} className="flex gap-2" style={{ marginBottom: 12 }}>
+                    <span style={{ color: "#16a34a", fontWeight: 700 }}>•</span>
+                    <div><p style={{ fontSize: 13, fontWeight: 700, color: "#003334" }}>{item.title}</p><p style={{ fontSize: 12, color: "#3f4945" }}>{item.body}</p></div>
+                  </div>
+                ))}
+              </div>
+              <div style={{ background: "white", borderRadius: 16, padding: 24 }}>
+                <p style={{ fontFamily: "Manrope", fontWeight: 700, fontSize: 14, color: "#ba1a1a", marginBottom: 16 }}>What to Improve</p>
+                {(f.whatDidnt ?? []).map((item) => (
+                  <div key={item.title} className="flex gap-2" style={{ marginBottom: 12 }}>
+                    <span style={{ color: "#ba1a1a", fontWeight: 700 }}>•</span>
+                    <div><p style={{ fontSize: 13, fontWeight: 700, color: "#003334" }}>{item.title}</p><p style={{ fontSize: 12, color: "#3f4945" }}>{item.body}</p></div>
+                  </div>
+                ))}
+              </div>
+            </div>
+            {/* Improvement path */}
+            <div style={{ background: "#f2f4f5", borderRadius: 16, padding: 24 }}>
+              <p style={{ fontFamily: "Manrope", fontWeight: 700, fontSize: 14, color: "#003334", marginBottom: 8 }}>How to improve</p>
+              <p style={{ fontSize: 13, color: "#3f4945", lineHeight: 1.6, marginBottom: 16 }}>{f.improvementPath}</p>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+                <div style={{ background: "white", borderRadius: 10, padding: 14, borderLeft: "4px solid #3a5a1c" }}>
+                  <p style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", color: "#3a5a1c", marginBottom: 4 }}>Next Action</p>
+                  <p style={{ fontSize: 13, fontWeight: 600, color: "#003334" }}>{f.recommendedAction}</p>
+                </div>
+                <div style={{ background: "white", borderRadius: 10, padding: 14, borderLeft: "4px solid #003334" }}>
+                  <p style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", color: "#003334", marginBottom: 4 }}>Study This</p>
+                  <p style={{ fontSize: 13, fontWeight: 600, color: "#003334" }}>{f.learningResource}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  // Question list
   return (
     <div>
       <div style={{ marginBottom: 28 }}>
         <h2 style={{ fontFamily: "Manrope", fontWeight: 800, fontSize: 26, color: "#191c1d", marginBottom: 6 }}>Practice Questions</h2>
-        <p style={{ fontSize: 14, color: "#3f4945" }}>Work through these at your own pace. Each question comes with framework tips.</p>
+        <p style={{ fontSize: 14, color: "#3f4945" }}>Write your answer, then get personalised AI feedback.</p>
       </div>
       <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
         {practiceQuestions.map((q) => {
@@ -276,7 +420,7 @@ function PracticeQuestionsTab({ onStartQuestion }) {
                 <p style={{ fontSize: 14, fontWeight: 600, color: "#191c1d", lineHeight: 1.5 }}>{q.q}</p>
               </div>
               <button
-                onClick={() => onStartQuestion(q)}
+                onClick={() => { setActive(q); setAnswer(""); setSubmitted(false); setFeedback(null); }}
                 style={{ background: "#003334", color: "white", padding: "10px 22px", borderRadius: 8, border: "none", fontFamily: "Manrope", fontWeight: 700, fontSize: 13, cursor: "pointer", flexShrink: 0 }}
               >
                 Start →
@@ -308,15 +452,34 @@ const interviewScenarios = [
   },
 ];
 
-function PracticeInterviewsTab({ onSubmit }) {
+function PracticeInterviewsTab({ onSubmit, results }) {
   const [active, setActive] = useState(null);
   const [answer, setAnswer] = useState("");
   const [timeLeft, setTimeLeft] = useState(null);
+  const [submitting, setSubmitting] = useState(false);
 
   function startInterview(scenario) {
     setActive(scenario);
     setAnswer("");
     setTimeLeft(scenario.timeLimit);
+  }
+
+  async function handleSubmit() {
+    if (!answer.trim()) return;
+    setSubmitting(true);
+    try {
+      const feedback = await generateInterviewFeedback({
+        question: active.title,
+        context: active.context,
+        answer,
+        archetype: results?.archetype ?? "Builder",
+        dimensions: results?.dimensions ?? [],
+      });
+      onSubmit({ feedback, scenario: active });
+    } catch {
+      onSubmit({ feedback: null, scenario: active });
+    }
+    setSubmitting(false);
   }
 
   function formatTime(s) {
@@ -418,12 +581,13 @@ function PracticeInterviewsTab({ onSubmit }) {
             Save Draft
           </button>
           <button
-            onClick={() => onSubmit(answer)}
+            onClick={handleSubmit}
+            disabled={submitting || !answer.trim()}
             className="flex items-center gap-2"
-            style={{ background: "#003334", color: "white", padding: "12px 28px", borderRadius: 8, border: "none", fontFamily: "Manrope", fontWeight: 700, fontSize: 14, cursor: "pointer" }}
+            style={{ background: submitting || !answer.trim() ? "#e1e3e4" : "#003334", color: submitting || !answer.trim() ? "#94a3b8" : "white", padding: "12px 28px", borderRadius: 8, border: "none", fontFamily: "Manrope", fontWeight: 700, fontSize: 14, cursor: submitting || !answer.trim() ? "default" : "pointer", transition: "all 0.2s" }}
           >
-            Submit for AI Feedback
-            <span className="material-symbols-outlined" style={{ fontSize: 18 }}>auto_awesome</span>
+            {submitting ? "Analysing your answer..." : "Submit for AI Feedback"}
+            <span className="material-symbols-outlined" style={{ fontSize: 18 }}>{submitting ? "hourglass_empty" : "auto_awesome"}</span>
           </button>
         </div>
       </div>
@@ -459,7 +623,23 @@ function PracticeInterviewsTab({ onSubmit }) {
 
 // ─── Interview Feedback tab ───────────────────────────────────────────────────
 
-function InterviewFeedbackTab({ onRetry }) {
+function InterviewFeedbackTab({ onRetry, feedback, scenario }) {
+  const f = feedback;
+  const circumference = 251.32;
+  const score = f?.score ?? 0;
+  const dashOffset = circumference - (score / 100) * circumference;
+
+  if (!f) {
+    return (
+      <div style={{ textAlign: "center", padding: "80px 40px" }}>
+        <span className="material-symbols-outlined" style={{ fontSize: 48, color: "#94a3b8", marginBottom: 16, display: "block" }}>warning</span>
+        <h2 style={{ fontFamily: "Manrope", fontWeight: 700, fontSize: 20, color: "#191c1d", marginBottom: 8 }}>Couldn't generate feedback</h2>
+        <p style={{ fontSize: 14, color: "#3f4945", marginBottom: 24 }}>Something went wrong with the AI. Please try again.</p>
+        <button onClick={onRetry} style={{ background: "#003334", color: "white", padding: "12px 28px", borderRadius: 8, border: "none", fontFamily: "Manrope", fontWeight: 700, fontSize: 14, cursor: "pointer" }}>Try Again</button>
+      </div>
+    );
+  }
+
   return (
     <div>
       <div style={{ marginBottom: 8 }}>
@@ -467,8 +647,8 @@ function InterviewFeedbackTab({ onRetry }) {
           <span className="material-symbols-outlined" style={{ fontSize: 16 }}>arrow_back</span>
           Back to Practice Labs
         </button>
-        <h1 style={{ fontFamily: "Manrope", fontWeight: 800, fontSize: 32, color: "#003334", marginBottom: 6, letterSpacing: "-0.5px" }}>Feedback: Product Sense Case Study</h1>
-        <p style={{ fontSize: 14, color: "#3f4945" }}>Analysis for your session: <em>"Designing a subscription model for a high-end wellness app."</em></p>
+        <h1 style={{ fontFamily: "Manrope", fontWeight: 800, fontSize: 32, color: "#003334", marginBottom: 6, letterSpacing: "-0.5px" }}>Interview Feedback</h1>
+        <p style={{ fontSize: 14, color: "#3f4945" }}>Analysis for: <em>"{scenario?.title}"</em></p>
       </div>
 
       <div style={{ display: "grid", gridTemplateColumns: "1fr 2fr", gap: 20, marginBottom: 20 }}>
@@ -478,18 +658,18 @@ function InterviewFeedbackTab({ onRetry }) {
             <svg width="128" height="128" viewBox="0 0 100 100">
               <circle cx="50" cy="50" r="40" fill="transparent" stroke="#e6e8e9" strokeWidth="8" />
               <circle cx="50" cy="50" r="40" fill="transparent" stroke="#003334" strokeWidth="8"
-                strokeDasharray="251.32" strokeDashoffset="70"
+                strokeDasharray={circumference} strokeDashoffset={dashOffset}
                 strokeLinecap="round"
                 style={{ transformOrigin: "50% 50%", transform: "rotate(-90deg)" }}
               />
             </svg>
             <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
-              <span style={{ fontFamily: "Manrope", fontWeight: 900, fontSize: 28, color: "#003334", lineHeight: 1 }}>72</span>
+              <span style={{ fontFamily: "Manrope", fontWeight: 900, fontSize: 28, color: "#003334", lineHeight: 1 }}>{score}</span>
               <span style={{ fontSize: 10, color: "#94a3b8" }}>out of 100</span>
             </div>
           </div>
-          <h3 style={{ fontFamily: "Manrope", fontWeight: 700, fontSize: 17, color: "#003334", fontStyle: "italic", marginBottom: 8 }}>"Authoritative & Strategic"</h3>
-          <p style={{ fontSize: 12, color: "#3f4945", lineHeight: 1.6 }}>Strong structuring and user empathy, but missed the edge-case monetization strategy needed for executive-level depth.</p>
+          <h3 style={{ fontFamily: "Manrope", fontWeight: 700, fontSize: 17, color: "#003334", fontStyle: "italic", marginBottom: 8 }}>"{f.label}"</h3>
+          <p style={{ fontSize: 12, color: "#3f4945", lineHeight: 1.6 }}>{f.summary}</p>
         </div>
 
         {/* Improvement path */}
@@ -499,17 +679,15 @@ function InterviewFeedbackTab({ onRetry }) {
           </div>
           <span style={{ background: "#ddeec8", color: "#2a4010", padding: "3px 12px", borderRadius: 99, fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", display: "inline-block", marginBottom: 16 }}>Next Milestone</span>
           <h2 style={{ fontFamily: "Manrope", fontWeight: 800, fontSize: 22, color: "#003334", marginBottom: 12 }}>Improvement Path</h2>
-          <p style={{ fontSize: 14, color: "#3f4945", lineHeight: 1.6, marginBottom: 24, maxWidth: 420 }}>
-            Your Product Sense is sharp, but your <strong>Technical Fluency</strong> score lagged. To bridge the gap for Lead PM roles, focus on articulating system constraints.
-          </p>
+          <p style={{ fontSize: 14, color: "#3f4945", lineHeight: 1.6, marginBottom: 24, maxWidth: 420 }}>{f.improvementPath}</p>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
             <div style={{ background: "white", borderRadius: 10, padding: 16, borderLeft: "4px solid #3a5a1c" }}>
               <p style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", color: "#3a5a1c", marginBottom: 4 }}>Recommended Action</p>
-              <p style={{ fontSize: 13, fontWeight: 600, color: "#003334" }}>Retry this question with a focus on Tech Fluency</p>
+              <p style={{ fontSize: 13, fontWeight: 600, color: "#003334" }}>{f.recommendedAction}</p>
             </div>
             <div style={{ background: "white", borderRadius: 10, padding: 16, borderLeft: "4px solid #003334" }}>
               <p style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", color: "#003334", marginBottom: 4 }}>Learning Resource</p>
-              <p style={{ fontSize: 13, fontWeight: 600, color: "#003334" }}>Review the Metrics Framework</p>
+              <p style={{ fontSize: 13, fontWeight: 600, color: "#003334" }}>{f.learningResource}</p>
             </div>
           </div>
         </div>
@@ -524,11 +702,7 @@ function InterviewFeedbackTab({ onRetry }) {
             </div>
             <h3 style={{ fontFamily: "Manrope", fontWeight: 700, fontSize: 15, color: "#003334" }}>What Worked</h3>
           </div>
-          {[
-            { title: "Clear user segments", body: "Identified high-value personas early." },
-            { title: "Logical flow", body: "Framework followed a consistent path." },
-            { title: "Value Proposition", body: "Articulated 'Why' behind every feature." },
-          ].map((item) => (
+          {(f.whatWorked ?? []).map((item) => (
             <div key={item.title} className="flex gap-3" style={{ marginBottom: 14 }}>
               <span style={{ color: "#16a34a", fontWeight: 700, marginTop: 2 }}>•</span>
               <div>
@@ -547,11 +721,7 @@ function InterviewFeedbackTab({ onRetry }) {
             </div>
             <h3 style={{ fontFamily: "Manrope", fontWeight: 700, fontSize: 15, color: "#003334" }}>What Didn't</h3>
           </div>
-          {[
-            { title: "Vague success metrics", body: "KPIs were too generic (e.g., 'more users')." },
-            { title: "Ignored technical constraints", body: "Proposals required heavy real-time infra." },
-            { title: "Monetization Depth", body: "Skipped tier-based pricing logic." },
-          ].map((item) => (
+          {(f.whatDidnt ?? []).map((item) => (
             <div key={item.title} className="flex gap-3" style={{ marginBottom: 14 }}>
               <span style={{ color: "#ba1a1a", fontWeight: 700, marginTop: 2 }}>•</span>
               <div>
@@ -562,15 +732,20 @@ function InterviewFeedbackTab({ onRetry }) {
           ))}
         </div>
 
-        {/* Archetype sync */}
+        {/* Score context */}
         <div style={{ background: "#003334", borderRadius: 16, padding: 24, display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
           <div>
-            <span className="material-symbols-outlined" style={{ fontSize: 32, color: "#77bcbd", marginBottom: 12, display: "block" }}>psychology_alt</span>
-            <h3 style={{ fontFamily: "Manrope", fontWeight: 700, fontSize: 17, color: "white", marginBottom: 8 }}>Archetype Sync</h3>
-            <p style={{ fontSize: 12, color: "#77bcbd", lineHeight: 1.6 }}>Your answers currently align 85% with "The Strategic Visionary" archetype. To reach "The Technical Architect," we need to tighten your engineering tradeoffs.</p>
+            <span className="material-symbols-outlined" style={{ fontSize: 32, color: "#77bcbd", marginBottom: 12, display: "block" }}>insights</span>
+            <h3 style={{ fontFamily: "Manrope", fontWeight: 700, fontSize: 17, color: "white", marginBottom: 8 }}>Score Context</h3>
+            <p style={{ fontSize: 12, color: "#77bcbd", lineHeight: 1.6 }}>
+              {score >= 80 ? "Exceptional answer. You're interview-ready for this question type." :
+               score >= 65 ? "Solid answer. A few more practice rounds and you'll nail this." :
+               score >= 45 ? "Developing. Focus on the improvement path above before retrying." :
+               "Needs work. Read the feedback carefully and try again with a fresh approach."}
+            </p>
           </div>
-          <button style={{ width: "100%", padding: "10px", background: "#004c4d", color: "white", borderRadius: 8, border: "1px solid rgba(119,188,189,0.3)", fontSize: 12, fontWeight: 700, cursor: "pointer", marginTop: 20, fontFamily: "Manrope" }}>
-            Explore My Archetype
+          <button onClick={onRetry} style={{ width: "100%", padding: "10px", background: "#004c4d", color: "white", borderRadius: 8, border: "1px solid rgba(119,188,189,0.3)", fontSize: 12, fontWeight: 700, cursor: "pointer", marginTop: 20, fontFamily: "Manrope" }}>
+            Try Another Question
           </button>
         </div>
       </div>
@@ -599,32 +774,54 @@ function InterviewFeedbackTab({ onRetry }) {
 
 // ─── Roadmap tab ──────────────────────────────────────────────────────────────
 
-const DIMENSION_PHASES = {
-  "Strategy":       { title: "Strategy: Market Positioning & Vision",   icon: "insights" },
-  "Execution":      { title: "Execution: User Research & Delivery",      icon: "groups" },
-  "Tech & Data":    { title: "Tech & Data: Fluency & Analytics",         icon: "code" },
-  "Communication":  { title: "Communication: Stakeholder Management",    icon: "forum" },
+const PLANS = {
+  "1m": {
+    label: "1 Month — Intensive Sprint",
+    description: "High-pressure, high-reward. Covers only the most interview-critical material. Best for someone with an interview coming up soon.",
+    phases: [
+      { title: "PM Fundamentals Crash Course",        icon: "bolt",        desc: "Core frameworks: CIRCLES, prioritisation, metrics. Non-negotiable foundations.", week: "Week 1" },
+      { title: "Product Sense & Case Studies",        icon: "psychology",  desc: "5 timed case study walkthroughs. Learn to structure any product question under pressure.", week: "Week 2" },
+      { title: "Behavioural & Communication",         icon: "forum",       desc: "STAR method, stakeholder scenarios, conflict resolution. Fast-tracks your soft skills.", week: "Week 3" },
+      { title: "Mock Interviews & Final Prep",        icon: "mic",         desc: "3 full mock interviews with AI feedback. Fix weak spots before the real thing.", week: "Week 4" },
+    ],
+  },
+  "3m": {
+    label: "3 Months — Standard Prep",
+    description: "The most popular path. Broad, balanced coverage across all PM dimensions with enough time to actually build the skill, not just memorise it.",
+    phases: [
+      { title: "PM Foundations & Mental Models",      icon: "school",      desc: "Deep dive into product thinking, user empathy, and decision-making frameworks.", week: "Month 1 · Week 1–2" },
+      { title: "Strategy & Market Thinking",          icon: "insights",    desc: "Competitive analysis, go-to-market thinking, opportunity sizing, and roadmap design.", week: "Month 1 · Week 3–4" },
+      { title: "Execution & Data Fluency",            icon: "analytics",   desc: "SQL basics, metrics trees, A/B testing, and driving delivery with engineering teams.", week: "Month 2 · Week 1–2" },
+      { title: "Product Sense Deep Dive",             icon: "psychology",  desc: "20+ case studies across consumer, B2B, and platform products. Real companies, real problems.", week: "Month 2 · Week 3–4" },
+      { title: "Communication & Influence",           icon: "forum",       desc: "Stakeholder management, executive communication, cross-functional alignment scenarios.", week: "Month 3 · Week 1–2" },
+      { title: "Mock Interviews & Polish",            icon: "mic",         desc: "5 full mock interviews, personalised feedback, and final story refinement.", week: "Month 3 · Week 3–4" },
+    ],
+  },
+  "6m": {
+    label: "6 Months — Deep Transition",
+    description: "The full journey. Built for career changers who want to be genuinely ready — not just interview-ready, but PM-ready. Covers everything, at depth.",
+    phases: [
+      { title: "PM Foundations & Mindset",            icon: "school",      desc: "What makes a great PM, thinking in systems, user-centricity from first principles.", week: "Month 1" },
+      { title: "User Research & Empathy",             icon: "groups",      desc: "Conducting interviews, synthesising insights, turning research into product decisions.", week: "Month 2" },
+      { title: "Strategy & Business Acumen",          icon: "insights",    desc: "Business models, market sizing, competitive positioning, and long-term roadmap vision.", week: "Month 3" },
+      { title: "Data, Tech & Analytical Reasoning",   icon: "analytics",   desc: "SQL, metrics design, instrumentation, working with engineers and data scientists.", week: "Month 4" },
+      { title: "Execution, Delivery & Leadership",    icon: "settings",    desc: "Agile practices, sprint planning, OKRs, cross-functional leadership and trade-off decisions.", week: "Month 5" },
+      { title: "Interview Mastery & Final Polish",    icon: "mic",         desc: "10+ mock interviews, story crafting, negotiation basics, and offer evaluation.", week: "Month 6" },
+    ],
+  },
 };
 
-function RoadmapTab({ results }) {
+function RoadmapTab() {
   const [timeline, setTimeline] = useState("3m");
-  const dimensions = results?.dimensions ?? [];
+  const plan = PLANS[timeline];
 
-  // Sort: weak dimensions first (highest priority), then strong ones
-  const sorted = [...dimensions].sort((a, b) => a.score - b.score);
-  const phases = sorted.map((d, i) => ({
-    ...DIMENSION_PHASES[d.name],
-    status: i === 0 ? "in-progress" : "locked",
-    week: i === 0 ? "Week 1 of 12" : `Phase ${i + 1}`,
-    pct: i === 0 ? 0 : 0,
-    score: d.score,
-  }));
   return (
     <div>
+      {/* Header */}
       <div className="flex items-end justify-between" style={{ marginBottom: 28 }}>
         <div>
           <h2 style={{ fontFamily: "Manrope", fontWeight: 800, fontSize: 26, color: "#191c1d", marginBottom: 6 }}>Your Roadmap</h2>
-          <p style={{ fontSize: 14, color: "#3f4945" }}>Timeline: <strong style={{ color: "#003334" }}>3 Months Standard</strong></p>
+          <p style={{ fontSize: 14, color: "#3f4945" }}>Choose the timeline that fits your situation.</p>
         </div>
         <div className="flex" style={{ background: "#f2f4f5", borderRadius: 12, padding: 4 }}>
           {["1m", "3m", "6m"].map((t) => (
@@ -632,24 +829,29 @@ function RoadmapTab({ results }) {
           ))}
         </div>
       </div>
-      <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-        {phases.map((p) => (
-          <div key={p.title} style={{ background: p.status === "locked" ? "rgba(255,255,255,0.5)" : "white", borderRadius: 16, padding: 22, display: "flex", alignItems: "center", gap: 16, opacity: p.status === "locked" ? 0.55 : 1 }}>
-            <div style={{ width: 48, height: 48, borderRadius: 12, background: p.status === "locked" ? "#eceeef" : "#004c4d", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-              <span className="material-symbols-outlined" style={{ color: p.status === "locked" ? "#94a3b8" : "#8dd3d3", fontSize: 22 }}>{p.icon}</span>
+
+      {/* Plan header card */}
+      <div style={{ background: "#003334", borderRadius: 16, padding: "24px 28px", marginBottom: 20, color: "white" }}>
+        <p style={{ fontFamily: "Manrope", fontWeight: 800, fontSize: 18, marginBottom: 6 }}>{plan.label}</p>
+        <p style={{ fontSize: 13, color: "rgba(255,255,255,0.7)", lineHeight: 1.6, maxWidth: 600 }}>{plan.description}</p>
+      </div>
+
+      {/* Phases */}
+      <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+        {plan.phases.map((p, i) => (
+          <div key={p.title} style={{ background: "white", borderRadius: 16, padding: 22, display: "flex", alignItems: "center", gap: 16 }}>
+            <div style={{ width: 44, height: 44, borderRadius: 12, background: i === 0 ? "#004c4d" : "#eceeef", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+              <span className="material-symbols-outlined" style={{ color: i === 0 ? "#8dd3d3" : "#94a3b8", fontSize: 20 }}>{p.icon}</span>
             </div>
             <div style={{ flex: 1 }}>
-              <div className="flex justify-between items-center" style={{ marginBottom: 8 }}>
+              <div className="flex justify-between items-center" style={{ marginBottom: 4 }}>
                 <span style={{ fontFamily: "Manrope", fontWeight: 700, fontSize: 14, color: "#191c1d" }}>{p.title}</span>
-                <span style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", color: p.status === "in-progress" ? "#003334" : "#94a3b8" }}>
-                  {p.status === "in-progress" ? "In Progress" : "Locked"}
+                <span style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", color: i === 0 ? "#003334" : "#94a3b8" }}>
+                  {i === 0 ? "Start Here" : p.week}
                 </span>
               </div>
-              <div style={{ height: 6, background: "#eceeef", borderRadius: 99, overflow: "hidden" }}>
-                <div style={{ height: "100%", width: `${p.pct}%`, background: "#003334", borderRadius: 99 }} />
-              </div>
+              <p style={{ fontSize: 12, color: "#3f4945", lineHeight: 1.5 }}>{p.desc}</p>
             </div>
-            <span style={{ fontSize: 12, color: "#64748b", flexShrink: 0 }}>{p.week}</span>
           </div>
         ))}
       </div>
@@ -661,18 +863,20 @@ function RoadmapTab({ results }) {
 
 export default function DashboardPage({ results, user, onSignOut }) {
   const [activeTab, setActiveTab] = useState("dashboard");
-  const [showFeedback, setShowFeedback] = useState(false);
+  const [interviewResult, setInterviewResult] = useState(null);
 
-  function handleInterviewSubmit() { setShowFeedback(true); }
-  function handleRetry() { setShowFeedback(false); }
+  function handleInterviewSubmit({ feedback, scenario }) {
+    setInterviewResult({ feedback, scenario });
+  }
+  function handleRetry() { setInterviewResult(null); }
 
   return (
     <Shell activeTab={activeTab} onNavigate={setActiveTab} onSignOut={onSignOut} user={user}>
       {activeTab === "dashboard"           && <OverviewTab onNavigate={setActiveTab} results={results} user={user} />}
       {activeTab === "roadmap"             && <RoadmapTab results={results} />}
-      {activeTab === "practice-questions"  && <PracticeQuestionsTab onStartQuestion={() => {}} />}
-      {activeTab === "practice-interviews" && !showFeedback && <PracticeInterviewsTab onSubmit={handleInterviewSubmit} />}
-      {activeTab === "practice-interviews" && showFeedback  && <InterviewFeedbackTab onRetry={handleRetry} />}
+      {activeTab === "practice-questions"  && <PracticeQuestionsTab results={results} />}
+      {activeTab === "practice-interviews" && !interviewResult && <PracticeInterviewsTab onSubmit={handleInterviewSubmit} results={results} />}
+      {activeTab === "practice-interviews" && interviewResult  && <InterviewFeedbackTab onRetry={handleRetry} feedback={interviewResult.feedback} scenario={interviewResult.scenario} />}
     </Shell>
   );
 }

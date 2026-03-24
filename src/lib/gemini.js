@@ -49,3 +49,56 @@ Rules:
   const cleaned = text.replace(/^```json\n?/, "").replace(/\n?```$/, "").trim();
   return JSON.parse(cleaned);
 }
+
+export async function generateInterviewFeedback({ question, context, answer, archetype, dimensions }) {
+  const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+
+  const dimSummary = dimensions?.map((d) => `${d.name}: ${d.score}%`).join(", ") ?? "unknown";
+
+  const prompt = `
+You are Otto, an expert PM interview coach helping candidates in India land PM roles.
+
+The candidate is a "${archetype}" archetype with these dimension scores: ${dimSummary}
+
+They were given this interview question:
+"${question}"
+
+Context: ${context}
+
+Their answer was:
+"""
+${answer || "(no answer provided)"}
+"""
+
+Evaluate their answer and return a JSON response with exactly this structure:
+{
+  "score": <integer 0-100>,
+  "label": "<3-4 word quality label like 'Structured but Surface-Level' or 'Strong Strategic Thinking'>",
+  "summary": "<2 sentences: overall assessment of the answer quality>",
+  "whatWorked": [
+    { "title": "<short title>", "body": "<1 sentence specific observation about what they did well>" },
+    { "title": "<short title>", "body": "<1 sentence specific observation>" },
+    { "title": "<short title>", "body": "<1 sentence specific observation>" }
+  ],
+  "whatDidnt": [
+    { "title": "<short title>", "body": "<1 sentence specific gap or missed opportunity>" },
+    { "title": "<short title>", "body": "<1 sentence specific gap>" },
+    { "title": "<short title>", "body": "<1 sentence specific gap>" }
+  ],
+  "improvementPath": "<2-3 sentences: what they should focus on to improve this specific type of answer>",
+  "recommendedAction": "<One concrete next action they can take today>",
+  "learningResource": "<One specific framework, concept, or skill to study>"
+}
+
+Rules:
+- Be specific to their actual answer — don't give generic feedback
+- Score honestly: 0-40 = needs major work, 41-65 = developing, 66-80 = solid, 81-100 = exceptional
+- Reference their archetype when relevant
+- Return only valid JSON, no other text
+`;
+
+  const result = await model.generateContent(prompt);
+  const text = result.response.text().trim();
+  const cleaned = text.replace(/^```json\n?/, "").replace(/\n?```$/, "").trim();
+  return JSON.parse(cleaned);
+}

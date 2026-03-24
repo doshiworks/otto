@@ -252,7 +252,7 @@ export default function DiagnosticPage({ onComplete }) {
           {/* Footer nav */}
           <div className="flex items-center justify-between" style={{ marginTop: 40, paddingTop: 28, borderTop: "1px solid rgba(191,201,196,0.2)" }}>
             <button
-              onClick={() => { if (current > 0) { setCurrent(current - 1); setSelected(null); } }}
+              onClick={() => { if (current > 0) { const prev = current - 1; setCurrent(prev); setSelected(answers.find(a => a.id === questions[prev].id)?.answer ?? null); } }}
               className="flex items-center gap-2"
               style={{ background: "none", border: "none", color: "#3f4945", fontWeight: 700, fontSize: 14, cursor: current > 0 ? "pointer" : "default", opacity: current > 0 ? 1 : 0.3 }}
             >
