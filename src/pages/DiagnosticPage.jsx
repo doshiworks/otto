@@ -179,19 +179,6 @@ export default function DiagnosticPage({ onComplete }) {
             </div>
           </div>
 
-          {/* Early insight */}
-          <div style={{ background: "white", borderRadius: 12, padding: 24, borderLeft: "4px solid #3a5a1c" }}>
-            <div className="flex gap-3">
-              <span className="material-symbols-outlined" style={{ color: "#3a5a1c", fontSize: 20 }}>lightbulb</span>
-              <div>
-                <h4 style={{ fontFamily: "Manrope", fontWeight: 700, fontSize: 14, marginBottom: 6, color: "#191c1d" }}>Early Insight</h4>
-                <p style={{ fontSize: 13, color: "#3f4945", lineHeight: 1.6 }}>
-                  You already show strong <span style={{ color: "#3a5a1c", fontWeight: 700 }}>execution skills</span> — that's a core PM capability. We're refining the strategy piece next.
-                </p>
-              </div>
-            </div>
-          </div>
-
           {/* Dimensions */}
           <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
             <h3 style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.12em", color: "#3f4945" }}>Assessment Dimensions</h3>

@@ -3,7 +3,7 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 const genAI = new GoogleGenerativeAI(import.meta.env.VITE_GEMINI_API_KEY);
 
 export async function generateInsights({ archetype, overall, dimensions }) {
-  const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+  const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
 
   const dimSummary = dimensions
     .map((d) => `${d.name}: ${d.score}%`)
@@ -51,7 +51,7 @@ Rules:
 }
 
 export async function generateInterviewFeedback({ question, context, answer, archetype, dimensions }) {
-  const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+  const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
 
   const dimSummary = dimensions?.map((d) => `${d.name}: ${d.score}%`).join(", ") ?? "unknown";
 
