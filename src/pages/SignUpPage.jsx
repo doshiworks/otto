@@ -9,7 +9,9 @@ export default function SignUpPage({ onContinue }) {
   async function handleSubmit() {
     if (!name || !email) return;
     setLoading(true);
-    await supabase.from("signups").insert({ name, email });
+    if (supabase) {
+      await supabase.from("signups").insert({ name, email });
+    }
     setLoading(false);
     onContinue({ name, email });
   }
