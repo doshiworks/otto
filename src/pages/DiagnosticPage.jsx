@@ -118,10 +118,6 @@ export default function DiagnosticPage({ onComplete }) {
         <nav className="flex justify-between items-center w-full px-6 py-3">
           <div className="flex items-center gap-8">
             <span style={{ fontFamily: "Manrope", fontWeight: 800, fontSize: 18, color: "#004D40" }}>Otto</span>
-            <div className="flex gap-6">
-              <span style={{ fontSize: 14, fontWeight: 500, color: "#64748b" }}>Assessments</span>
-              <span style={{ fontSize: 14, fontWeight: 500, color: "#64748b" }}>Resources</span>
-            </div>
           </div>
           <div className="flex items-center gap-4">
             <div style={{ background: "#eceeef", padding: "6px 16px", borderRadius: 12, display: "flex", flexDirection: "column", alignItems: "flex-end" }}>
