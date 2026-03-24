@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { ARCHETYPES } from "../lib/scoring";
 import { generateInsights } from "../lib/gemini";
+import QuoteBanner from "../components/QuoteBanner";
 
 // Blurred placeholder rows for locked content
 function LockedRow({ width }) {
@@ -80,6 +81,7 @@ export default function ReadinessReportPage({ results, user, onUnlock }) {
         </button>
       </header>
 
+      <QuoteBanner />
       <main style={{ maxWidth: 1200, margin: "0 auto", padding: "48px 40px" }}>
         <div style={{ marginBottom: 40 }}>
           <h1 style={{ fontFamily: "Manrope", fontWeight: 800, fontSize: 36, color: "#003334", marginBottom: 8 }}>

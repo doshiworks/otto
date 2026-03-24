@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { computeResults } from "../lib/scoring";
+import QuoteBanner from "../components/QuoteBanner";
 
 const questions = [
   {
@@ -132,6 +133,8 @@ export default function DiagnosticPage({ onComplete }) {
           </div>
         </nav>
       </header>
+
+      <QuoteBanner />
 
       {/* Slim sidebar */}
       <aside style={{ position: "fixed", left: 0, top: 0, width: 80, height: "100vh", background: "#f8fafa", display: "flex", flexDirection: "column", alignItems: "center", padding: "24px 0", gap: 24, zIndex: 40, borderRight: "none" }}>

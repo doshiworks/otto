@@ -2,6 +2,7 @@ import { useState } from "react";
 import Sidebar from "../components/Sidebar";
 import { ARCHETYPES } from "../lib/scoring";
 import { generateInterviewFeedback } from "../lib/gemini";
+import QuoteBanner from "../components/QuoteBanner";
 
 // ─── Shared shell ─────────────────────────────────────────────────────────────
 
@@ -20,6 +21,7 @@ function Shell({ activeTab, onNavigate, onSignOut, onRetake, user, results, chil
             <span className="material-symbols-outlined" style={{ color: "#64748b", cursor: "pointer" }}>settings</span>
           </div>
         </header>
+        <QuoteBanner />
         <main style={{ flex: 1, padding: "32px 40px", maxWidth: 1200, width: "100%" }}>
           {children}
         </main>
