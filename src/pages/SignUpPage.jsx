@@ -1,16 +1,19 @@
 import { useState } from "react";
 import { supabase } from "../lib/supabase";
 
-export default function SignUpPage({ onContinue }) {
+export default function SignUpPage({ results, onContinue }) {
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [loading, setLoading] = useState(false);
+
+  const overall = results?.overall ?? "—";
+  const archetype = results?.archetype ?? "Builder";
 
   async function handleSubmit() {
     if (!name || !email) return;
     setLoading(true);
     if (supabase) {
-      await supabase.from("signups").insert({ name, email });
+      await supabase.from("signups").insert({ name, email, archetype, overall_score: results?.overall });
     }
     setLoading(false);
     onContinue({ name, email });
@@ -37,10 +40,10 @@ export default function SignUpPage({ onContinue }) {
           {/* Score preview */}
           <div style={{ background: "#f2f4f5", borderRadius: 12, padding: 20, marginBottom: 28, display: "flex", alignItems: "center", gap: 16 }}>
             <div style={{ width: 56, height: 56, borderRadius: "50%", background: "#004D40", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-              <span style={{ fontFamily: "Manrope", fontWeight: 900, fontSize: 18, color: "white" }}>58%</span>
+              <span style={{ fontFamily: "Manrope", fontWeight: 900, fontSize: 18, color: "white" }}>{overall}%</span>
             </div>
             <div>
-              <p style={{ fontFamily: "Manrope", fontWeight: 700, fontSize: 14, color: "#191c1d" }}>You are a Builder</p>
+              <p style={{ fontFamily: "Manrope", fontWeight: 700, fontSize: 14, color: "#191c1d" }}>You are a {archetype}</p>
               <p style={{ fontSize: 12, color: "#3f4945", marginTop: 3, lineHeight: 1.5 }}>Sign up to unlock your full report, gap analysis, and 3-month roadmap.</p>
             </div>
           </div>

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { computeResults } from "../lib/scoring";
 
 const questions = [
   {
@@ -105,7 +106,7 @@ export default function DiagnosticPage({ onComplete }) {
     if (current + 1 < questions.length) {
       setCurrent(current + 1);
     } else {
-      onComplete(newAnswers);
+      onComplete(computeResults(newAnswers));
     }
   }
 

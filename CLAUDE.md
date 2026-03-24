@@ -37,6 +37,18 @@ Extracted from Google Stitch: C:\Users\parth\otto-wireframes\stitch\
 
 ## Progress Log
 
+### 2026-03-24
+- Built real score engine (src/lib/scoring.js)
+  - 8 questions × weighted answers (0–3pts) across 4 dimensions
+  - Archetype resolved from dominant dimension (or Explorer if balanced)
+  - Full archetype data: description, tags, risk areas, insight, top companies
+- Wired results through App.jsx → DiagnosticPage → SignUpPage → ReadinessReportPage
+- Connected Supabase — signups table stores name, email, archetype, overall_score
+- Integrated Gemini 1.5 Flash (src/lib/gemini.js)
+  - Generates personalised summary, 3 risk areas, and insight per user
+  - Falls back to static archetype data if API fails
+- ReadinessReportPage now fully dynamic — gauge, archetype, dimensions, AI content all real
+
 ### 2026-03-23
 - New project created (fresh start from PM Buddy / pm-readiness-engine)
 - Scaffolded React + Tailwind (Vite)

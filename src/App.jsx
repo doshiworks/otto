@@ -9,11 +9,13 @@ import "./index.css";
 
 export default function App() {
   const [page, setPage] = useState("landing");
+  const [results, setResults] = useState(null);
+  const [user, setUser] = useState(null);
 
   if (page === "landing")    return <LandingPage onCTA={() => setPage("diagnostic")} />;
-  if (page === "diagnostic") return <DiagnosticPage onComplete={() => setPage("signup")} />;
-  if (page === "signup")     return <SignUpPage onContinue={() => setPage("report")} />;
-  if (page === "report")     return <ReadinessReportPage onUnlock={() => setPage("payment")} />;
+  if (page === "diagnostic") return <DiagnosticPage onComplete={(r) => { setResults(r); setPage("signup"); }} />;
+  if (page === "signup")     return <SignUpPage results={results} onContinue={(u) => { setUser(u); setPage("report"); }} />;
+  if (page === "report")     return <ReadinessReportPage results={results} user={user} onUnlock={() => setPage("payment")} />;
   if (page === "payment")    return <PaymentPage onComplete={() => setPage("dashboard")} />;
-  if (page === "dashboard")  return <DashboardPage onSignOut={() => setPage("landing")} />;
+  if (page === "dashboard")  return <DashboardPage results={results} user={user} onSignOut={() => setPage("landing")} />;
 }
