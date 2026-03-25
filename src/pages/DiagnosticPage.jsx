@@ -136,26 +136,8 @@ export default function DiagnosticPage({ onComplete }) {
 
       <QuoteBanner />
 
-      {/* Slim sidebar */}
-      <aside style={{ position: "fixed", left: 0, top: 0, width: 80, height: "100vh", background: "#f8fafa", display: "flex", flexDirection: "column", alignItems: "center", padding: "24px 0", gap: 24, zIndex: 40, borderRight: "none" }}>
-        <span style={{ fontFamily: "Manrope", fontWeight: 900, fontSize: 18, color: "#004D40" }}>ET</span>
-        <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 16, alignItems: "center", paddingTop: 40 }}>
-          {[
-            { icon: "dashboard", active: true },
-            { icon: "book",      active: false },
-            { icon: "mic",       active: false },
-            { icon: "work",      active: false },
-          ].map((item) => (
-            <div key={item.icon} style={{ padding: 10, borderRadius: 12, background: item.active ? "white" : "transparent", boxShadow: item.active ? "0 2px 8px rgba(0,51,52,0.08)" : "none", opacity: item.active ? 1 : 0.35 }}>
-              <span className="material-symbols-outlined" style={{ color: "#004D40", fontSize: 22 }}>{item.icon}</span>
-            </div>
-          ))}
-        </div>
-        <span className="material-symbols-outlined" style={{ color: "#64748b", fontSize: 20 }}>help</span>
-      </aside>
-
       {/* Main content */}
-      <main style={{ marginLeft: 80, padding: "48px 96px", maxWidth: 1280, display: "grid", gridTemplateColumns: "4fr 8fr", gap: 48 }}>
+      <main style={{ padding: "48px 96px", maxWidth: 1280, display: "grid", gridTemplateColumns: "4fr 8fr", gap: 48 }}>
 
         {/* Left panel */}
         <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
@@ -261,7 +243,7 @@ export default function DiagnosticPage({ onComplete }) {
       </main>
 
       {/* Bottom quote */}
-      <div style={{ marginLeft: 80, textAlign: "center", padding: "16px 0 32px", color: "rgba(63,73,69,0.5)", fontSize: 13, fontStyle: "italic" }}>
+      <div style={{ textAlign: "center", padding: "16px 0 32px", color: "rgba(63,73,69,0.5)", fontSize: 13, fontStyle: "italic" }}>
         "Product management is not about knowing the answers, it's about asking the right questions." — We're helping you do both.
       </div>
     </div>
