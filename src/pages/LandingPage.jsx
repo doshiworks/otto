@@ -12,9 +12,7 @@ function Nav({ onCTA }) {
           </nav>
         </div>
         <div className="flex items-center gap-4">
-          <span className="material-symbols-outlined" style={{ color: "#64748b", cursor: "pointer" }}>notifications</span>
-          <span className="material-symbols-outlined" style={{ color: "#64748b", cursor: "pointer" }}>settings</span>
-          <button onClick={onCTA} style={{ background: "#003334", color: "white", padding: "10px 24px", borderRadius: 8, border: "none", fontFamily: "Manrope", fontWeight: 700, fontSize: 14, cursor: "pointer" }}>
+<button onClick={onCTA} style={{ background: "#003334", color: "white", padding: "10px 24px", borderRadius: 8, border: "none", fontFamily: "Manrope", fontWeight: 700, fontSize: 14, cursor: "pointer" }}>
             Check Readiness
           </button>
         </div>
