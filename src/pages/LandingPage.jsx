@@ -46,7 +46,10 @@ function Hero({ onCTA }) {
             <button onClick={onCTA} style={{ background: "#004D40", color: "white", padding: "16px 32px", borderRadius: 8, border: "none", fontFamily: "Manrope", fontWeight: 700, fontSize: 16, cursor: "pointer" }}>
               Check your PM readiness
             </button>
-            <button style={{ background: "transparent", color: "#004D40", padding: "16px 32px", borderRadius: 8, border: "1.5px solid #bfc9c4", fontFamily: "Manrope", fontWeight: 700, fontSize: 16, cursor: "pointer" }}>
+            <button
+              onClick={() => document.getElementById("how-it-works").scrollIntoView({ behavior: "smooth" })}
+              style={{ background: "transparent", color: "#004D40", padding: "16px 32px", borderRadius: 8, border: "1.5px solid #bfc9c4", fontFamily: "Manrope", fontWeight: 700, fontSize: 16, cursor: "pointer" }}
+            >
               How it works
             </button>
           </div>
@@ -220,7 +223,7 @@ function HowItWorks({ onCTA }) {
     { n: "4", label: "Hired",      desc: "Crack interviews with high-authority confidence.", active: false, tertiary: true },
   ];
   return (
-    <section style={{ padding: "96px 48px" }}>
+    <section id="how-it-works" style={{ padding: "96px 48px" }}>
       <div className="max-w-7xl mx-auto">
         <div className="text-center" style={{ marginBottom: 72 }}>
           <h2 style={{ fontFamily: "Manrope", fontWeight: 800, fontSize: 36, color: "#004D40", marginBottom: 16 }}>A System to Get You Hired</h2>
